@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard Manager - Optik</title>
+  <link rel="stylesheet" href="../assets/style.css" />
+</head>
+<body>
+  <div class="dashboard-wrapper">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="brand-info">
+          <h2>Optik</h2>
+          <span>Branch Manager</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-section-title">Menu Utama</div>
+        <div class="nav-item active">
+          <span class="nav-icon">📊</span>
+          <span>Dashboard</span>
+        </div>
+        <div class="nav-item">
+          <span class="nav-icon">🛒</span>
+          <span>Kasir</span>
+        </div>
+        <div class="nav-item">
+          <span class="nav-icon">👓</span>
+          <span>Input Kacamata</span>
+        </div>
+        <div class="nav-item">
+          <span class="nav-icon">📦</span>
+          <span>Cek Stok</span>
+        </div>
+
+        <div class="nav-section-title">Manajemen</div>
+        <div class="nav-item">
+          <span class="nav-icon">👥</span>
+          <span>Manajemen Karyawan</span>
+        </div>
+        <div class="nav-item">
+          <span class="nav-icon">📋</span>
+          <span>Laporan Penjualan</span>
+        </div>
+        <div class="nav-item">
+          <span class="nav-icon">💰</span>
+          <span>Laporan Keuangan</span>
+        </div>
+        <div class="nav-item">
+          <span class="nav-icon">📈</span>
+          <span>Analisis Data</span>
+        </div>
+
+        <div class="nav-section-title">Pengaturan</div>
+        <div class="nav-item">
+          <span class="nav-icon">🏪</span>
+          <span>Profil Cabang</span>
+        </div>
+        <div class="nav-item">
+          <span class="nav-icon">⚙️</span>
+          <span>Pengaturan</span>
+        </div>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-info">
+          <div class="user-avatar js-user-avatar">BS</div>
+          <div class="user-details">
+            <div class="user-name js-user-name">Branch Manager</div>
+            <div class="user-role js-user-role">Branch Manager</div>
+          </div>
+        </div>
+        <button id="btnLogout" class="btn-logout">
+          <span>🚪</span>
+          <span>Keluar</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Top Header -->
+      <header class="top-header">
+        <h1>Dashboard</h1>
+        <div class="header-right">
+          <div class="header-date">
+            📅 <span class="js-date">-</span>
+          </div>
+          <span class="header-badge badge-manager">Branch Manager</span>
+        </div>
+      </header>
+
+      <!-- Dashboard Content -->
+      <div class="dashboard-content">
+        <!-- Welcome Banner -->
+        <div class="welcome-banner">
+          <h2>Selamat Datang</h2>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+          <div class="stat-card blue">
+            <div class="stat-icon">💰</div>
+            <div class="stat-value" data-target="4850000" data-prefix="Rp ">Rp 0</div>
+            <div class="stat-label">Penjualan Hari Ini</div>
+          </div>
+          <div class="stat-card teal">
+            <div class="stat-icon">🧾</div>
+            <div class="stat-value" data-target="4">0</div>
+            <div class="stat-label">Transaksi Hari Ini</div>
+          </div>
+          <div class="stat-card green">
+            <div class="stat-icon">👓</div>
+            <div class="stat-value" data-target="100">0</div>
+            <div class="stat-label">Stok Kacamata</div>
+          </div>
+          <div class="stat-card orange">
+            <div class="stat-icon">👥</div>
+            <div class="stat-value" data-target="2">0</div>
+            <div class="stat-label">Karyawan Aktif</div>
+          </div>
+          <div class="stat-card red">
+            <div class="stat-icon">⚠️</div>
+            <div class="stat-value" data-target="5">0</div>
+            <div class="stat-label">Stok Menipis</div>
+          </div>
+        </div>
+
+        <!-- Recent Transactions -->
+        <div class="recent-section">
+          <div class="section-header">
+            <h3>🧾 Transaksi </h3>
+          </div>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>No. Invoice</th>
+                  <th>Pelanggan</th>
+                  <th>Produk</th>
+                  <th>Total</th>
+                  <th>Kasir</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>INV-20260411-001</td>
+                  <td>Ahmad Fauzi</td>
+                  <td>Frame Titanium + Lensa Progresif</td>
+                  <td>Rp 2.500.000</td>
+                  <td>Andi Pratama</td>
+                  <td><span class="status-badge status-selesai">Selesai</span></td>
+                </tr>
+                <tr>
+                  <td>INV-20260411-002</td>
+                  <td>Rina Wati</td>
+                  <td>Kacamata Minus -2.00</td>
+                  <td>Rp 850.000</td>
+                  <td>Dewi Lestari</td>
+                  <td><span class="status-badge status-selesai">Selesai</span></td>
+                </tr>
+                <tr>
+                  <td>INV-20260411-003</td>
+                  <td>Budi Hartono</td>
+                  <td>Sunglasses Polarized</td>
+                  <td>Rp 1.200.000</td>
+                  <td>Andi Pratama</td>
+                  <td><span class="status-badge status-pending">Pending</span></td>
+                </tr>
+                <tr>
+                  <td>INV-20260410-015</td>
+                  <td>Sari Dewi</td>
+                  <td>Frame Anak + Lensa</td>
+                  <td>Rp 450.000</td>
+                  <td>Dewi Lestari</td>
+                  <td><span class="status-badge status-selesai">Selesai</span></td>
+                </tr>
+                <tr>
+                  <td>INV-20260410-014</td>
+                  <td>Joko Susilo</td>
+                  <td>Lensa Kontak (3 box)</td>
+                  <td>Rp 750.000</td>
+                  <td>Andi Pratama</td>
+                  <td><span class="status-badge status-batal">Batal</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="../config/config.js"></script>
+  <script src="../assets/app.js"></script>
+</body>
+</html>

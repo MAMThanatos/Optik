@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard Kasir - OptikPOS</title>
+  <link rel="stylesheet" href="../assets/style.css" />
+</head>
+<body>
+  <div class="dashboard-wrapper">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="brand-info">
+          <h2>OptikPOS</h2>
+          <span>Karyawan / Kasir</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-section-title">Menu</div>
+        <div class="nav-item active">
+          <span class="nav-icon">📊</span>
+          <span>Dashboard</span>
+        </div>
+        <div class="nav-item">
+          <span class="nav-icon">🛒</span>
+          <span>Kasir / POS</span>
+        </div>
+        <div class="nav-item">
+          <span class="nav-icon">📦</span>
+          <span>Cek Stok</span>
+        </div>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-info">
+          <div class="user-avatar js-user-avatar">AP</div>
+          <div class="user-details">
+            <div class="user-name js-user-name">Karyawan</div>
+            <div class="user-role js-user-role">Karyawan / Kasir</div>
+          </div>
+        </div>
+        <button id="btnLogout" class="btn-logout">
+          <span>🚪</span>
+          <span>Keluar</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Top Header -->
+      <header class="top-header">
+        <h1>Dashboard Kasir</h1>
+        <div class="header-right">
+          <div class="header-date">
+            📅 <span class="js-date">-</span>
+          </div>
+          <span class="header-badge badge-kasir">Karyawan</span>
+        </div>
+      </header>
+
+      <!-- Dashboard Content -->
+      <div class="dashboard-content">
+        <!-- Welcome Banner -->
+        <div class="welcome-banner">
+          <h2> Selamat Datang </h2>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+          <div class="stat-card green">
+            <div class="stat-icon">👓</div>
+            <div class="stat-value" data-target="100">0</div>
+            <div class="stat-label">Total Stok</div>
+          </div>
+        </div>
+
+        <!-- Recent Transactions -->
+        <div class="recent-section">
+          <div class="section-header">
+            <h3>🧾 Transaksi</h3>
+          </div>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>No. Invoice</th>
+                  <th>Pelanggan</th>
+                  <th>Produk</th>
+                  <th>Total</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>INV-20260411-001</td>
+                  <td>Ahmad Fauzi</td>
+                  <td>Frame Titanium + Lensa Progresif</td>
+                  <td>Rp 2.500.000</td>
+                  <td><span class="status-badge status-selesai">Selesai</span></td>
+                </tr>
+                <tr>
+                  <td>INV-20260411-003</td>
+                  <td>Budi Hartono</td>
+                  <td>Sunglasses Polarized</td>
+                  <td>Rp 1.200.000</td>
+                  <td><span class="status-badge status-pending">Pending</span></td>
+                </tr>
+                <tr>
+                  <td>INV-20260411-005</td>
+                  <td>Maya Sari</td>
+                  <td>Kacamata Baca +1.50</td>
+                  <td>Rp 350.000</td>
+                  <td><span class="status-badge status-selesai">Selesai</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="../config/config.js"></script>
+  <script src="../assets/app.js"></script>
+</body>
+</html>
