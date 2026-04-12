@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kasir / POS - OptikPOS</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="stylesheet" href="../assets/css/kasir.css" />
+</head>
+<body>
+  <div class="dashboard-wrapper">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="brand-info">
+          <h2>OptikPOS</h2>
+          <span class="js-sidebar-role">Kasir</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-section-title">Menu</div>
+        <a href="#" class="nav-item js-nav-dashboard">
+          <span class="nav-icon">📊</span>
+          <span>Dashboard</span>
+        </a>
+        <a href="kasir.html" class="nav-item active">
+          <span class="nav-icon">🛒</span>
+          <span>Kasir / POS</span>
+        </a>
+        <div class="nav-item js-nav-extra" style="display:none;">
+          <span class="nav-icon">👓</span>
+          <span>Input Kacamata</span>
+        </div>
+        <div class="nav-item">
+          <span class="nav-icon">📦</span>
+          <span>Cek Stok</span>
+        </div>
+        <div class="js-manager-menus" style="display:none;">
+          <div class="nav-section-title">Manajemen</div>
+          <div class="nav-item">
+            <span class="nav-icon">👥</span>
+            <span>Manajemen Karyawan</span>
+          </div>
+          <div class="nav-item">
+            <span class="nav-icon">📋</span>
+            <span>Laporan Penjualan</span>
+          </div>
+          <div class="nav-item">
+            <span class="nav-icon">💰</span>
+            <span>Laporan Keuangan</span>
+          </div>
+          <div class="nav-item">
+            <span class="nav-icon">📈</span>
+            <span>Analisis Data</span>
+          </div>
+          <div class="nav-section-title">Pengaturan</div>
+          <div class="nav-item">
+            <span class="nav-icon">🏪</span>
+            <span>Profil Cabang</span>
+          </div>
+          <div class="nav-item">
+            <span class="nav-icon">⚙️</span>
+            <span>Pengaturan</span>
+          </div>
+        </div>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-info">
+          <div class="user-avatar js-user-avatar">AP</div>
+          <div class="user-details">
+            <div class="user-name js-user-name">Karyawan</div>
+            <div class="user-role js-user-role">Karyawan / Kasir</div>
+          </div>
+        </div>
+        <button id="btnLogout" class="btn-logout">
+          <span>🚪</span>
+          <span>Keluar</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Top Header -->
+      <header class="top-header">
+        <h1>🛒 Kasir / POS</h1>
+        <div class="header-right">
+          <div class="header-date">
+            📅 <span class="js-date">-</span>
+          </div>
+          <span class="header-badge badge-kasir js-header-badge">Kasir</span>
+        </div>
+      </header>
+
+      <!-- POS Content -->
+      <div class="pos-layout">
+        <!-- Left: Product List -->
+        <div class="pos-products">
+          <div class="pos-search-bar">
+            <input type="text" id="searchProduct" placeholder="🔍 Cari produk kacamata..." />
+            <div class="category-filters">
+              <button class="cat-btn active" data-cat="all">Semua</button>
+              <button class="cat-btn" data-cat="Frame">Frame</button>
+              <button class="cat-btn" data-cat="Lensa">Lensa</button>
+              <button class="cat-btn" data-cat="Sunglasses">Sunglasses</button>
+              <button class="cat-btn" data-cat="Lensa Kontak">Kontak</button>
+              <button class="cat-btn" data-cat="Aksesoris">Aksesoris</button>
+            </div>
+          </div>
+          <div class="product-grid" id="productGrid">
+            <!-- Products will be rendered by JS -->
+          </div>
+        </div>
+
+        <!-- Right: Cart -->
+        <div class="pos-cart">
+          <div class="cart-header">
+            <h3>🧾 Keranjang Belanja</h3>
+            <button class="btn-clear-cart" id="btnClearCart" title="Kosongkan Keranjang">🗑️</button>
+          </div>
+
+          <div class="cart-items" id="cartItems">
+            <div class="cart-empty" id="cartEmpty">
+              <span>🛒</span>
+              <p>Keranjang masih kosong</p>
+              <small>Klik produk untuk menambahkan</small>
+            </div>
+          </div>
+
+          <!-- Discount -->
+          <div class="cart-discount">
+            <label>Diskon (%)</label>
+            <input type="number" id="discountInput" min="0" max="100" value="0" />
+          </div>
+
+          <!-- Totals -->
+          <div class="cart-totals">
+            <div class="total-row">
+              <span>Subtotal</span>
+              <span id="subtotalAmount">Rp 0</span>
+            </div>
+            <div class="total-row">
+              <span>Diskon</span>
+              <span id="discountAmount">- Rp 0</span>
+            </div>
+            <div class="total-row total-grand">
+              <span>Total</span>
+              <span id="grandTotal">Rp 0</span>
+            </div>
+          </div>
+
+          <!-- Payment Button -->
+          <button class="btn-pay" id="btnPay" disabled>
+            💳 Bayar Sekarang
+          </button>
+        </div>
+      </div>
+
+      <!-- Payment Modal -->
+      <div class="modal-overlay" id="paymentModal">
+        <div class="modal-card">
+          <div class="modal-header">
+            <h2>💳 Pembayaran</h2>
+            <button class="modal-close" id="btnClosePayment">&times;</button>
+          </div>
+          <div class="modal-body">
+            <div class="payment-summary">
+              <div class="payment-total-label">Total yang harus dibayar</div>
+              <div class="payment-total-value" id="paymentTotal">Rp 0</div>
+            </div>
+
+            <div class="payment-methods">
+              <h4>Pilih Metode Pembayaran</h4>
+              <div class="method-grid" id="methodGrid">
+                <!-- Methods rendered by JS -->
+              </div>
+            </div>
+
+            <!-- Tunai Section -->
+            <div class="tunai-section" id="tunaiSection" style="display:none;">
+              <label>Jumlah Uang Diterima</label>
+              <input type="number" id="cashInput" placeholder="Masukkan jumlah uang..." />
+              <div class="kembalian-row" id="kembalianRow" style="display:none;">
+                <span>Kembalian:</span>
+                <span id="kembalianAmount" class="kembalian-value">Rp 0</span>
+              </div>
+            </div>
+
+            <!-- Transfer Section -->
+            <div class="transfer-section" id="transferSection" style="display:none;">
+              <label>Pilih Bank</label>
+              <div class="bank-options">
+                <button class="bank-btn" data-bank="BCA">🏦 BCA</button>
+                <button class="bank-btn" data-bank="Mandiri">🏦 Mandiri</button>
+                <button class="bank-btn" data-bank="BNI">🏦 BNI</button>
+                <button class="bank-btn" data-bank="BRI">🏦 BRI</button>
+              </div>
+            </div>
+
+            <!-- QRIS Section -->
+            <div class="qris-section" id="qrisSection" style="display:none;">
+              <div class="qris-placeholder">
+                <div class="qris-box">
+                  <span>📱</span>
+                  <p>QR Code akan ditampilkan di sini</p>
+                  <small>Scan menggunakan aplikasi e-wallet</small>
+                </div>
+              </div>
+            </div>
+
+            <!-- Kartu Section -->
+            <div class="kartu-section" id="kartuSection" style="display:none;">
+              <div class="kartu-placeholder">
+                <span>💳</span>
+                <p>Silakan tempelkan atau gesek kartu pada mesin EDC</p>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn-cancel" id="btnCancelPay">Batal</button>
+            <button class="btn-confirm-pay" id="btnConfirmPay" disabled>
+              ✅ Konfirmasi Pembayaran
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Receipt Modal -->
+      <div class="modal-overlay" id="receiptModal">
+        <div class="modal-card receipt-card">
+          <div class="receipt-content" id="receiptContent">
+            <!-- Receipt rendered by JS -->
+          </div>
+          <div class="receipt-actions">
+            <button class="btn-print" id="btnPrint">🖨️ Cetak Struk</button>
+            <button class="btn-new-transaction" id="btnNewTransaction">🛒 Transaksi Baru</button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="../config/config.js"></script>
+  <script src="../assets/js/app.js"></script>
+  <script src="../assets/js/kasir.js"></script>
+</body>
+</html>
