@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Input Kacamata - OptikPOS</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="stylesheet" href="../assets/css/input-kacamata.css" />
+</head>
+<body>
+  <div class="dashboard-wrapper">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="brand-info">
+          <h2>OptikPOS</h2>
+          <span class="js-sidebar-role">Branch Manager</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-section-title">Menu Utama</div>
+        <a href="#" class="nav-item js-nav-dashboard">
+          <span class="nav-icon">📊</span>
+          <span>Dashboard</span>
+        </a>
+        <a href="kasir.html" class="nav-item">
+          <span class="nav-icon">🛒</span>
+          <span>Kasir / POS</span>
+        </a>
+        <a href="input-kacamata.html" class="nav-item active">
+          <span class="nav-icon">👓</span>
+          <span>Input Kacamata</span>
+        </a>
+        <div class="nav-item">
+          <span class="nav-icon">📦</span>
+          <span>Cek Stok</span>
+        </div>
+
+        <div class="js-manager-menus" style="display:none;">
+          <div class="nav-section-title">Manajemen</div>
+          <div class="nav-item">
+            <span class="nav-icon">👥</span>
+            <span>Manajemen Karyawan</span>
+          </div>
+          <div class="nav-item">
+            <span class="nav-icon">📋</span>
+            <span>Laporan Penjualan</span>
+          </div>
+          <div class="nav-item">
+            <span class="nav-icon">💰</span>
+            <span>Laporan Keuangan</span>
+          </div>
+          <div class="nav-item">
+            <span class="nav-icon">📈</span>
+            <span>Analisis Data</span>
+          </div>
+          <div class="nav-section-title">Pengaturan</div>
+          <div class="nav-item">
+            <span class="nav-icon">🏪</span>
+            <span>Profil Cabang</span>
+          </div>
+          <div class="nav-item">
+            <span class="nav-icon">⚙️</span>
+            <span>Pengaturan</span>
+          </div>
+        </div>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-info">
+          <div class="user-avatar js-user-avatar">BS</div>
+          <div class="user-details">
+            <div class="user-name js-user-name">Manager</div>
+            <div class="user-role js-user-role">Branch Manager</div>
+          </div>
+        </div>
+        <button id="btnLogout" class="btn-logout">
+          <span>🚪</span>
+          <span>Keluar</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Top Header -->
+      <header class="top-header">
+        <h1>👓 Input Kacamata</h1>
+        <div class="header-right">
+          <div class="header-date">
+            📅 <span class="js-date">-</span>
+          </div>
+          <span class="header-badge badge-manager js-header-badge">Branch Manager</span>
+        </div>
+      </header>
+
+      <!-- Page Content -->
+      <div class="page-content">
+        <!-- Stats Summary -->
+        <div class="input-stats">
+          <div class="input-stat-card">
+            <div class="input-stat-icon">📦</div>
+            <div class="input-stat-info">
+              <div class="input-stat-value" id="totalProducts">0</div>
+              <div class="input-stat-label">Total Produk</div>
+            </div>
+          </div>
+          <div class="input-stat-card">
+            <div class="input-stat-icon">🏷️</div>
+            <div class="input-stat-info">
+              <div class="input-stat-value" id="totalCategories">0</div>
+              <div class="input-stat-label">Kategori</div>
+            </div>
+          </div>
+          <div class="input-stat-card">
+            <div class="input-stat-icon">⚠️</div>
+            <div class="input-stat-info">
+              <div class="input-stat-value" id="lowStockCount">0</div>
+              <div class="input-stat-label">Stok Menipis</div>
+            </div>
+          </div>
+          <div class="input-stat-card">
+            <div class="input-stat-icon">💰</div>
+            <div class="input-stat-info">
+              <div class="input-stat-value" id="totalValue">Rp 0</div>
+              <div class="input-stat-label">Nilai Inventaris</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Form Section -->
+        <div class="form-section">
+          <div class="form-section-header">
+            <h3>➕ Tambah Produk Baru</h3>
+            <button class="btn-toggle-form" id="btnToggleForm">
+              <span id="toggleIcon">▼</span>
+            </button>
+          </div>
+          <div class="form-body" id="formBody">
+            <form id="productForm">
+              <div class="form-row">
+                <div class="form-col">
+                  <label for="inputNama">Nama Produk <span class="required">*</span></label>
+                  <input type="text" id="inputNama" placeholder="Contoh: Frame Titanium Classic" required />
+                </div>
+                <div class="form-col">
+                  <label for="inputMerek">Merek <span class="required">*</span></label>
+                  <input type="text" id="inputMerek" placeholder="Contoh: RayOptic" required />
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-col">
+                  <label for="inputKategori">Kategori <span class="required">*</span></label>
+                  <select id="inputKategori" required>
+                    <option value="">-- Pilih Kategori --</option>
+                    <option value="Frame">Frame</option>
+                    <option value="Lensa">Lensa</option>
+                    <option value="Sunglasses">Sunglasses</option>
+                    <option value="Lensa Kontak">Lensa Kontak</option>
+                    <option value="Aksesoris">Aksesoris</option>
+                  </select>
+                </div>
+                <div class="form-col">
+                  <label for="inputUkuran">Ukuran Lensa</label>
+                  <input type="text" id="inputUkuran" placeholder="Contoh: 52-18-140 atau -" />
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-col">
+                  <label for="inputHarga">Harga (Rp) <span class="required">*</span></label>
+                  <input type="number" id="inputHarga" placeholder="Contoh: 1500000" min="0" required />
+                </div>
+                <div class="form-col">
+                  <label for="inputStok">Stok <span class="required">*</span></label>
+                  <input type="number" id="inputStok" placeholder="Contoh: 15" min="0" required />
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-col full">
+                  <label for="inputDeskripsi">Deskripsi</label>
+                  <textarea id="inputDeskripsi" rows="3" placeholder="Deskripsi singkat produk..."></textarea>
+                </div>
+              </div>
+
+              <div class="form-actions">
+                <button type="reset" class="btn-reset" id="btnReset">🔄 Reset Form</button>
+                <button type="submit" class="btn-submit" id="btnSubmit">💾 Simpan Produk</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Product Table Section -->
+        <div class="table-section">
+          <div class="table-section-header">
+            <h3>📋 Daftar Produk Kacamata</h3>
+            <div class="table-actions">
+              <input type="text" id="searchTable" placeholder="🔍 Cari produk..." class="table-search" />
+              <select id="filterCategory" class="table-filter">
+                <option value="all">Semua Kategori</option>
+                <option value="Frame">Frame</option>
+                <option value="Lensa">Lensa</option>
+                <option value="Sunglasses">Sunglasses</option>
+                <option value="Lensa Kontak">Lensa Kontak</option>
+                <option value="Aksesoris">Aksesoris</option>
+              </select>
+            </div>
+          </div>
+          <div class="table-wrapper">
+            <table id="productTable">
+              <thead>
+                <tr>
+                  <th>No</th>
+                  <th>ID</th>
+                  <th>Nama Produk</th>
+                  <th>Kategori</th>
+                  <th>Merek</th>
+                  <th>Ukuran Lensa</th>
+                  <th>Harga</th>
+                  <th>Stok</th>
+                  <th>Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="productTableBody">
+                <!-- Rendered by JS -->
+              </tbody>
+            </table>
+          </div>
+          <div class="table-footer">
+            <span class="table-info" id="tableInfo">Menampilkan 0 produk</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Edit Modal -->
+      <div class="modal-overlay" id="editModal">
+        <div class="modal-card">
+          <div class="modal-header">
+            <h2>✏️ Edit Produk</h2>
+            <button class="modal-close" id="btnCloseEdit">&times;</button>
+          </div>
+          <div class="modal-body">
+            <form id="editForm">
+              <input type="hidden" id="editId" />
+              <div class="form-row">
+                <div class="form-col">
+                  <label for="editNama">Nama Produk <span class="required">*</span></label>
+                  <input type="text" id="editNama" required />
+                </div>
+                <div class="form-col">
+                  <label for="editMerek">Merek <span class="required">*</span></label>
+                  <input type="text" id="editMerek" required />
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-col">
+                  <label for="editKategori">Kategori <span class="required">*</span></label>
+                  <select id="editKategori" required>
+                    <option value="Frame">Frame</option>
+                    <option value="Lensa">Lensa</option>
+                    <option value="Sunglasses">Sunglasses</option>
+                    <option value="Lensa Kontak">Lensa Kontak</option>
+                    <option value="Aksesoris">Aksesoris</option>
+                  </select>
+                </div>
+                <div class="form-col">
+                  <label for="editUkuran">Ukuran Lensa</label>
+                  <input type="text" id="editUkuran" />
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-col">
+                  <label for="editHarga">Harga (Rp) <span class="required">*</span></label>
+                  <input type="number" id="editHarga" min="0" required />
+                </div>
+                <div class="form-col">
+                  <label for="editStok">Stok <span class="required">*</span></label>
+                  <input type="number" id="editStok" min="0" required />
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-col full">
+                  <label for="editDeskripsi">Deskripsi</label>
+                  <textarea id="editDeskripsi" rows="3"></textarea>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button class="btn-cancel" id="btnCancelEdit">Batal</button>
+            <button class="btn-confirm-pay" id="btnSaveEdit">💾 Simpan Perubahan</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Delete Confirmation Modal -->
+      <div class="modal-overlay" id="deleteModal">
+        <div class="modal-card" style="max-width:400px;">
+          <div class="modal-header">
+            <h2>🗑️ Hapus Produk</h2>
+            <button class="modal-close" id="btnCloseDelete">&times;</button>
+          </div>
+          <div class="modal-body" style="text-align:center;">
+            <div style="font-size:48px;margin-bottom:12px;">⚠️</div>
+            <p style="font-size:15px;color:var(--text-primary);margin-bottom:8px;">Apakah Anda yakin ingin menghapus produk ini?</p>
+            <p class="delete-product-name" id="deleteProductName" style="font-weight:700;color:var(--danger);font-size:16px;"></p>
+          </div>
+          <div class="modal-footer" style="justify-content:center;">
+            <button class="btn-cancel" id="btnCancelDelete">Batal</button>
+            <button class="btn-delete-confirm" id="btnConfirmDelete">🗑️ Ya, Hapus</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Success Toast -->
+      <div class="toast" id="toast">
+        <span class="toast-icon" id="toastIcon">✅</span>
+        <span class="toast-message" id="toastMessage">Berhasil!</span>
+      </div>
+    </main>
+  </div>
+
+  <script src="../config/config.js"></script>
+  <script src="../assets/js/app.js"></script>
+  <script src="../assets/js/input-kacamata.js"></script>
+</body>
+</html>
