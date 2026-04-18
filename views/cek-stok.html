@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cek Stok</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="stylesheet" href="../assets/css/cek-stok.css" />
+</head>
+<body>
+  <div class="dashboard-wrapper">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="brand-info">
+          <h2>OptikPOS</h2>
+          <span class="js-sidebar-role">Role</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-section-title">Menu Utama</div>
+        <a href="#" class="nav-item js-nav-dashboard">
+          <span class="nav-icon">📊</span>
+          <span>Dashboard</span>
+        </a>
+        <a href="kasir.html" class="nav-item">
+          <span class="nav-icon">🛒</span>
+          <span>Kasir</span>
+        </a>
+        <a href="input-kacamata.html" class="nav-item js-nav-input">
+          <span class="nav-icon">👓</span>
+          <span>Input Kacamata</span>
+        </a>
+        <a href="cek-stok.html" class="nav-item active">
+          <span class="nav-icon">📦</span>
+          <span>Cek Stok</span>
+        </a>
+
+        <div class="js-manager-menus" style="display:none;">
+          <div class="nav-section-title">Manajemen</div>
+          <div class="nav-item">
+            <span class="nav-icon">👥</span>
+            <span>Manajemen Karyawan</span>
+          </div>
+          <div class="nav-item">
+            <span class="nav-icon">📋</span>
+            <span>Laporan Penjualan</span>
+          </div>
+          <div class="nav-item">
+            <span class="nav-icon">💰</span>
+            <span>Laporan Keuangan</span>
+          </div>
+          <div class="nav-item">
+            <span class="nav-icon">📈</span>
+            <span>Analisis Data</span>
+          </div>
+          <div class="nav-section-title">Pengaturan</div>
+          <div class="nav-item">
+            <span class="nav-icon">⚙️</span>
+            <span>Pengaturan</span>
+          </div>
+        </div>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-info">
+          <div class="user-avatar js-user-avatar">??</div>
+          <div class="user-details">
+            <div class="user-name js-user-name">User</div>
+            <div class="user-role js-user-role">Role</div>
+          </div>
+        </div>
+        <button id="btnLogout" class="btn-logout">
+          <span>🚪</span>
+          <span>Keluar</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Top Header -->
+      <header class="top-header">
+        <h1>📦 Cek Stok</h1>
+        <div class="header-right">
+          <div class="header-date">
+            📅 <span class="js-date">-</span>
+          </div>
+          <span class="header-badge badge-manager js-header-badge">Role</span>
+        </div>
+      </header>
+
+      <!-- Page Content -->
+      <div class="page-content cek-stok-page">
+        <div class="stats-grid cek-stok-stats">
+          <div class="stat-card green">
+            <div class="stat-icon">👓</div>
+            <div class="stat-value" id="totalStok">0</div>
+            <div class="stat-label">Total Stok Produk</div>
+          </div>
+          <div class="stat-card red">
+            <div class="stat-icon">⚠️</div>
+            <div class="stat-value" id="stokMenipis">0</div>
+            <div class="stat-label">Stok Menipis (&lt; 10)</div>
+          </div>
+        </div>
+
+        <div class="table-section cek-stok-table-section">
+          <div class="table-section-header cek-stok-table-header">
+            <h3 class="cek-stok-table-title">📋 Data Stok Produk</h3>
+            <div class="table-actions cek-stok-table-actions">
+              <input type="text" id="searchStok" placeholder="🔍 Cari produk..." class="table-search cek-stok-search" />
+              <select id="filterKategori" class="table-filter cek-stok-filter">
+                <option value="all">Semua Kategori</option>
+                <option value="Frame">Frame</option>
+                <option value="Lensa">Lensa</option>
+                <option value="Sunglasses">Sunglasses</option>
+                <option value="Lensa Kontak">Lensa Kontak</option>
+                <option value="Aksesoris">Aksesoris</option>
+              </select>
+            </div>
+          </div>
+          <div class="table-wrapper cek-stok-table-wrapper">
+            <table id="stokTable">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Nama Produk</th>
+                  <th>Kategori</th>
+                  <th>Merek</th>
+                  <th>Harga</th>
+                  <th>Stok</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="stokTableBody">
+                <!-- Rendered by JS -->
+              </tbody>
+            </table>
+          </div>
+          <div class="table-footer cek-stok-table-footer">
+            <span class="table-info" id="stokInfo">Menampilkan 0 produk</span>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="../config/config.js"></script>
+  <script src="../assets/js/app.js"></script>
+  <script src="../assets/js/cek-stok.js"></script>
+</body>
+</html>

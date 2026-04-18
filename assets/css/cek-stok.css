@@ -1,0 +1,76 @@
+/* assets/css/cek-stok.css */
+
+.stock-ok { color: var(--success, #10b981); font-weight: bold; }
+.stock-low { color: var(--warning, #f59e0b); font-weight: bold; }
+.stock-empty { color: var(--danger, #ef4444); font-weight: bold; }
+
+.cek-stok-page {
+  padding: 24px;
+}
+
+.cek-stok-stats {
+  margin-bottom: 24px;
+}
+
+.cek-stok-table-section {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.cek-stok-table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.cek-stok-table-title {
+  margin: 0;
+  font-size: 1.1rem;
+  color: var(--text-primary, #1f2937);
+}
+
+.cek-stok-table-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.cek-stok-search,
+.cek-stok-filter {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color, #e5e7eb);
+  outline: none;
+}
+
+.cek-stok-filter {
+  background: white;
+}
+
+.cek-stok-table-wrapper {
+  overflow-x: auto;
+}
+
+#stokTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+#stokTable th,
+#stokTable td {
+  padding: 12px;
+  border-bottom: 1px solid var(--border-color, #e5e7eb);
+}
+
+#stokTable th {
+  text-align: left;
+  border-bottom: 2px solid var(--border-color, #e5e7eb);
+}
+
+.cek-stok-table-footer {
+  margin-top: 16px;
+  color: var(--text-muted, #6b7280);
+  font-size: 0.9rem;
+}
