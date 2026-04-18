@@ -41,7 +41,6 @@ document.addEventListener("DOMContentLoaded", function () {
         <td>${u.id}</td>
         <td style="font-weight: 500;">${u.nama}</td>
         <td>${roleBadge}</td>
-        <td>${u.cabang}</td>
         <td>${maskedPassword}</td>
         <td>
           <button class="action-btn" title="Edit" onclick="editKaryawan('${u.id}')">✏️</button>
@@ -68,7 +67,6 @@ document.addEventListener("DOMContentLoaded", function () {
   const inputId = document.getElementById("inputId");
   const inputNama = document.getElementById("inputNama");
   const inputRole = document.getElementById("inputRole");
-  const inputCabang = document.getElementById("inputCabang");
   const inputPassword = document.getElementById("inputPassword");
   const modalTitle = document.getElementById("modalTitle");
 
@@ -117,7 +115,6 @@ document.addEventListener("DOMContentLoaded", function () {
     inputId.readOnly = true; // prevent changing ID on edit
     inputNama.value = user.nama;
     inputRole.value = user.role;
-    inputCabang.value = user.cabang;
     inputPassword.value = user.password;
     
     modalTitle.textContent = "✏️ Edit Karyawan";
@@ -147,8 +144,7 @@ document.addEventListener("DOMContentLoaded", function () {
         id: newId,
         nama: inputNama.value.trim(),
         password: inputPassword.value.trim(),
-        role: inputRole.value,
-        cabang: inputCabang.value.trim()
+        role: inputRole.value
       };
       
       usersData.push(newUser);
@@ -162,7 +158,6 @@ document.addEventListener("DOMContentLoaded", function () {
       if (userIndex !== -1) {
         usersData[userIndex].nama = inputNama.value.trim();
         usersData[userIndex].role = inputRole.value;
-        usersData[userIndex].cabang = inputCabang.value.trim();
         usersData[userIndex].password = inputPassword.value.trim();
         
         saveUsers(usersData);
