@@ -190,10 +190,31 @@ const PAYMENT_METHODS = [
 ];
 
 /**
+ * Fungsi untuk mengambil data users dari localStorage (atau default USERS)
+ */
+function getUsers() {
+  const storedUsers = localStorage.getItem("pos_users");
+  if (storedUsers) {
+    return JSON.parse(storedUsers);
+  }
+  // Initialize with default
+  localStorage.setItem("pos_users", JSON.stringify(USERS));
+  return USERS;
+}
+
+/**
+ * Fungsi untuk menyimpan data users ke localStorage
+ */
+function saveUsers(users) {
+  localStorage.setItem("pos_users", JSON.stringify(users));
+}
+
+/**
  * Fungsi untuk autentikasi user
  */
 function authenticateUser(userId, password) {
-  const user = USERS.find(
+  const currentUsers = getUsers();
+  const user = currentUsers.find(
     (u) => u.id === userId && u.password === password
   );
   return user || null;

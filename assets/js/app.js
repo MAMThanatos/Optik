@@ -7,10 +7,21 @@ function initApp() {
 
   if (path.includes("login.html")) {
     initLoginPage();
-  } else if (path.includes("dashboard-manager.html")) {
+  } else if (
+    path.includes("dashboard-manager.html") || 
+    path.includes("manajemen-karyawan.html") || 
+    path.includes("input-kacamata.html")
+  ) {
     initDashboard("branch_manager");
   } else if (path.includes("dashboard-kasir.html")) {
     initDashboard("karyawan");
+  } else if (path.includes("cek-stok.html") || path.includes("kasir.html")) {
+    const session = getSession();
+    if (session) {
+      initDashboard(session.role);
+    } else {
+      window.location.href = "login.html";
+    }
   }
 }
 
@@ -83,6 +94,18 @@ function initDashboard(expectedRole) {
   updateDate();
 
   animateStats();
+
+  // Role-based menu visibility
+  const managerMenus = document.querySelectorAll(".js-manager-menus");
+  const managerOnlyNavs = document.querySelectorAll(".js-manager-only");
+  
+  if (session.role === "branch_manager") {
+    managerMenus.forEach(el => el.style.display = "block");
+    managerOnlyNavs.forEach(el => el.style.display = "flex");
+  } else {
+    managerMenus.forEach(el => el.style.display = "none");
+    managerOnlyNavs.forEach(el => el.style.display = "none");
+  }
 }
 
 /**
