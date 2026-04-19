@@ -66,7 +66,6 @@ document.addEventListener("DOMContentLoaded", function () {
   const originalId = document.getElementById("originalId");
   const inputId = document.getElementById("inputId");
   const inputNama = document.getElementById("inputNama");
-  const inputRole = document.getElementById("inputRole");
   const inputPassword = document.getElementById("inputPassword");
   const modalTitle = document.getElementById("modalTitle");
 
@@ -114,7 +113,6 @@ document.addEventListener("DOMContentLoaded", function () {
     inputId.value = user.id;
     inputId.readOnly = true; // prevent changing ID on edit
     inputNama.value = user.nama;
-    inputRole.value = user.role;
     inputPassword.value = user.password;
     
     modalTitle.textContent = "✏️ Edit Karyawan";
@@ -144,7 +142,7 @@ document.addEventListener("DOMContentLoaded", function () {
         id: newId,
         nama: inputNama.value.trim(),
         password: inputPassword.value.trim(),
-        role: inputRole.value
+        role: "karyawan"
       };
       
       usersData.push(newUser);
@@ -157,7 +155,6 @@ document.addEventListener("DOMContentLoaded", function () {
       
       if (userIndex !== -1) {
         usersData[userIndex].nama = inputNama.value.trim();
-        usersData[userIndex].role = inputRole.value;
         usersData[userIndex].password = inputPassword.value.trim();
         
         saveUsers(usersData);
