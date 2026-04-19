@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Laporan Penjualan - OptikPOS</title>
-  <link rel="stylesheet" href="../assets/css/style.css?v=5" />
-  <link rel="stylesheet" href="../assets/css/laporan-penjualan.css?v=1" />
+  <title>Laporan Keuangan - OptikPOS</title>
+  <link rel="stylesheet" href="../assets/css/style.css?v=6" />
+  <link rel="stylesheet" href="../assets/css/laporan-keuangan.css?v=1" />
 </head>
 <body>
   <div class="dashboard-wrapper">
@@ -43,11 +43,11 @@
             <span class="nav-icon">👥</span>
             <span>Manajemen Karyawan</span>
           </a>
-          <a href="laporan-penjualan.html" class="nav-item active">
+          <a href="laporan-penjualan.html" class="nav-item">
             <span class="nav-icon">📋</span>
             <span>Laporan Penjualan</span>
           </a>
-          <a href="laporan-keuangan.html" class="nav-item">
+          <a href="laporan-keuangan.html" class="nav-item active">
             <span class="nav-icon">💰</span>
             <span>Laporan Keuangan</span>
           </a>
@@ -79,7 +79,7 @@
     <main class="main-content">
       <!-- Top Header -->
       <header class="top-header">
-        <h1>📋 Laporan Penjualan</h1>
+        <h1>💰 Laporan Keuangan</h1>
         <div class="header-right">
           <div class="header-date">
             📅 <span class="js-date">-</span>
@@ -89,7 +89,7 @@
       </header>
 
       <!-- Page Content -->
-      <div class="page-content lp-page">
+      <div class="page-content lk-page">
         
         <!-- Filter Bar -->
         <div class="filter-bar">
@@ -98,7 +98,7 @@
             <select id="timeFilter" class="filter-select">
               <option value="today">Hari Ini</option>
               <option value="week">7 Hari Terakhir</option>
-              <option value="month">Bulan Ini</option>
+              <option value="month" selected>Bulan Ini</option>
               <option value="all">Semua Waktu</option>
             </select>
           </div>
@@ -108,60 +108,102 @@
         </div>
 
         <!-- Summary Cards -->
-        <div class="stats-grid lp-stats">
+        <div class="stats-grid lk-stats">
           <div class="stat-card blue">
             <div class="stat-icon">💰</div>
             <div class="stat-value" id="totPendapatan">Rp 0</div>
-            <div class="stat-label">Total Pendapatan</div>
+            <div class="stat-label">Pendapatan (Omset)</div>
           </div>
           <div class="stat-card teal">
-            <div class="stat-icon">🧾</div>
-            <div class="stat-value" id="totTransaksi">0</div>
-            <div class="stat-label">Jumlah Transaksi</div>
+            <div class="stat-icon">📊</div>
+            <div class="stat-value" id="totLabaKotor">Rp 0</div>
+            <div class="stat-label">Laba Kotor (Est 40% Margin)</div>
           </div>
-          <div class="stat-card green">
-            <div class="stat-icon">👓</div>
-            <div class="stat-value" id="totItemTerjual">0</div>
-            <div class="stat-label">Item Terjual</div>
+          <div class="stat-card red">
+            <div class="stat-icon">💸</div>
+            <div class="stat-value" id="totPengeluaran">Rp 0</div>
+            <div class="stat-label">Total Beban/Pengeluaran</div>
+          </div>
+          <div class="stat-card green net-profit-card">
+            <div class="stat-icon">⚖️</div>
+            <div class="stat-value" id="totLabaBersih">Rp 0</div>
+            <div class="stat-label">Laba Bersih (Net Profit)</div>
           </div>
         </div>
 
-        <!-- Table -->
+        <!-- Table Section for Expenses -->
         <div class="table-section">
           <div class="table-section-header">
-            <h3>Daftar Transaksi</h3>
+            <h3>Rincian Beban Operasional (Uang Keluar)</h3>
             <div class="table-actions">
-              <input type="text" id="searchTx" placeholder="🔍 Cari Invoice/Kasir..." class="filter-search" />
+              <button class="btn-primary" id="btnTambahPengeluaran">➕ Catat Pengeluaran</button>
             </div>
           </div>
           <div class="table-wrapper">
-            <table id="salesTable">
+            <table id="expenseTable">
               <thead>
                 <tr>
-                  <th>Tanggal & Waktu</th>
-                  <th>No. Invoice</th>
-                  <th>Kasir</th>
-                  <th>Item Terjual</th>
-                  <th>Metode</th>
-                  <th>Total</th>
+                  <th>Tanggal</th>
+                  <th>Kategori</th>
+                  <th>Keterangan</th>
+                  <th>Dicatat Oleh</th>
+                  <th>Nominal</th>
+                  <th>Aksi</th>
                 </tr>
               </thead>
-              <tbody id="salesTableBody">
+              <tbody id="expenseTableBody">
                 <!-- Rendered by JS -->
               </tbody>
             </table>
           </div>
           <div class="table-footer">
-            <span class="table-info" id="salesInfo">Menampilkan 0 transaksi</span>
+            <span class="table-info" id="expenseInfo">Menampilkan 0 pengeluaran</span>
           </div>
         </div>
 
       </div>
+
+      <!-- Modal Tambah Pengeluaran -->
+      <div class="modal-overlay" id="expenseModal">
+        <div class="modal-card">
+          <div class="modal-header">
+            <h2>➕ Catat Pengeluaran</h2>
+            <button class="modal-close" id="btnCloseExpense">&times;</button>
+          </div>
+          <div class="modal-body">
+            <form id="expenseForm">
+              <div class="form-group">
+                <label for="expCategory">Kategori Pengeluaran <span class="required">*</span></label>
+                <select id="expCategory" required>
+                  <option value="Listrik & Air">Listrik & Air</option>
+                  <option value="Gaji Karyawan">Gaji Karyawan</option>
+                  <option value="Sewa Tempat">Sewa Tempat</option>
+                  <option value="Kebersihan">Kebersihan</option>
+                  <option value="Lain-lain">Lain-lain</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="expNominal">Nominal (Rp) <span class="required">*</span></label>
+                <input type="number" id="expNominal" placeholder="Contoh: 150000" min="1" required />
+              </div>
+              <div class="form-group">
+                <label for="expDesc">Keterangan / Catatan Tambahan</label>
+                <input type="text" id="expDesc" placeholder="Contoh: Beli token listrik" />
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button class="btn-cancel" id="btnCancelExpense">Batal</button>
+            <button class="btn-confirm-pay" id="btnSaveExpense">💾 Simpan</button>
+          </div>
+        </div>
+      </div>
+
     </main>
   </div>
 
   <script src="../config/config.js"></script>
-  <script src="../assets/js/app.js?v=4"></script>
-  <script src="../assets/js/laporan-penjualan.js?v=1"></script>
+  <script src="../assets/js/app.js?v=5"></script>
+  <script src="../assets/js/laporan-keuangan.js?v=1"></script>
 </body>
 </html>

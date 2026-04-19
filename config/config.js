@@ -296,3 +296,21 @@ function getProducts() {
 function saveProducts(products) {
   localStorage.setItem("pos_products", JSON.stringify(products));
 }
+
+/**
+ * Fungsi untuk mengambil data pengeluaran (expenses) dari localStorage
+ */
+function getExpenses() {
+  const stored = localStorage.getItem("pos_expenses");
+  if (stored) {
+    return JSON.parse(stored);
+  }
+  return [];
+}
+
+/**
+ * Fungsi untuk menyimpan data pengeluaran (expenses) ke localStorage
+ */
+function saveExpenses(expenses) {
+  localStorage.setItem("pos_expenses", JSON.stringify(expenses));
+}

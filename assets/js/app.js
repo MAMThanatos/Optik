@@ -11,7 +11,8 @@ function initApp() {
     path.includes("dashboard-manager.html") || 
     path.includes("manajemen-karyawan.html") || 
     path.includes("input-kacamata.html") ||
-    path.includes("laporan-penjualan.html")
+    path.includes("laporan-penjualan.html") ||
+    path.includes("laporan-keuangan.html")
   ) {
     initDashboard("branch_manager");
   } else if (path.includes("dashboard-kasir.html")) {
