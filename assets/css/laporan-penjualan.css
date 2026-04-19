@@ -1,0 +1,171 @@
+/* assets/css/laporan-penjualan.css */
+
+.lp-page {
+  padding: 24px;
+}
+
+.filter-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: white;
+  padding: 16px 24px;
+  border-radius: 12px;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+}
+
+.filter-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.filter-group label {
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.filter-select {
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color, #e5e7eb);
+  outline: none;
+  font-size: 14px;
+  background-color: #f9fafb;
+  cursor: pointer;
+}
+
+.btn-export {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  background: white;
+  border: 1px solid var(--border-color, #e5e7eb);
+  color: var(--text-primary);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-export:hover {
+  background: #f3f4f6;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.lp-stats {
+  margin-bottom: 24px;
+}
+
+.table-section {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.table-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.table-section-header h3 {
+  margin: 0;
+  color: var(--primary);
+  font-size: 1.2rem;
+}
+
+.filter-search {
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color, #e5e7eb);
+  outline: none;
+  width: 250px;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+}
+
+#salesTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+#salesTable th,
+#salesTable td {
+  padding: 14px 12px;
+  border-bottom: 1px solid var(--border-color, #e5e7eb);
+  text-align: left;
+}
+
+#salesTable th {
+  background-color: #f9fafb;
+  font-weight: 600;
+  color: var(--text-secondary);
+  border-bottom: 2px solid var(--border-color, #e5e7eb);
+}
+
+#salesTable tbody tr:hover {
+  background-color: #f9fafb;
+}
+
+.table-footer {
+  margin-top: 16px;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.item-list {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  max-width: 250px;
+}
+
+.item-list div {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.method-badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  background-color: #f3f4f6;
+  color: #374151;
+  text-transform: capitalize;
+}
+
+/* Print Styles */
+@media print {
+  .sidebar, .top-header, .filter-bar, .filter-search {
+    display: none !important;
+  }
+  
+  .dashboard-wrapper {
+    display: block;
+  }
+  
+  .main-content {
+    margin-left: 0;
+    padding: 0;
+  }
+  
+  .lp-page {
+    padding: 0;
+  }
+  
+  .table-section {
+    box-shadow: none;
+    border: none;
+    padding: 0;
+  }
+}

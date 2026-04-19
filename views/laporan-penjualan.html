@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Cek Stok</title>
-  <link rel="stylesheet" href="../assets/css/style.css" />
-  <link rel="stylesheet" href="../assets/css/cek-stok.css" />
+  <title>Laporan Penjualan - OptikPOS</title>
+  <link rel="stylesheet" href="../assets/css/style.css?v=5" />
+  <link rel="stylesheet" href="../assets/css/laporan-penjualan.css?v=1" />
 </head>
 <body>
   <div class="dashboard-wrapper">
@@ -14,13 +14,13 @@
       <div class="sidebar-header">
         <div class="brand-info">
           <h2>OptikPOS</h2>
-          <span class="js-sidebar-role">Role</span>
+          <span class="js-sidebar-role">Branch Manager</span>
         </div>
       </div>
 
       <nav class="sidebar-nav">
         <div class="nav-section-title">Menu Utama</div>
-        <a href="#" class="nav-item js-nav-dashboard">
+        <a href="dashboard-manager.html" class="nav-item js-nav-dashboard">
           <span class="nav-icon">📊</span>
           <span>Dashboard</span>
         </a>
@@ -32,18 +32,18 @@
           <span class="nav-icon">👓</span>
           <span>Input Kacamata</span>
         </a>
-        <a href="cek-stok.html" class="nav-item active">
+        <a href="cek-stok.html" class="nav-item">
           <span class="nav-icon">📦</span>
           <span>Cek Stok</span>
         </a>
 
-        <div class="js-manager-menus" style="display:none;">
+        <div class="js-manager-menus">
           <div class="nav-section-title">Manajemen</div>
           <a href="manajemen-karyawan.html" class="nav-item">
             <span class="nav-icon">👥</span>
             <span>Manajemen Karyawan</span>
           </a>
-          <a href="laporan-penjualan.html" class="nav-item">
+          <a href="laporan-penjualan.html" class="nav-item active">
             <span class="nav-icon">📋</span>
             <span>Laporan Penjualan</span>
           </a>
@@ -82,73 +82,89 @@
     <main class="main-content">
       <!-- Top Header -->
       <header class="top-header">
-        <h1>📦 Cek Stok</h1>
+        <h1>📋 Laporan Penjualan</h1>
         <div class="header-right">
           <div class="header-date">
             📅 <span class="js-date">-</span>
           </div>
-          <span class="header-badge badge-manager js-header-badge">Role</span>
+          <span class="header-badge badge-manager js-header-badge">Branch Manager</span>
         </div>
       </header>
 
       <!-- Page Content -->
-      <div class="page-content cek-stok-page">
-        <div class="stats-grid cek-stok-stats">
-          <div class="stat-card green">
-            <div class="stat-icon">👓</div>
-            <div class="stat-value" id="totalStok">0</div>
-            <div class="stat-label">Total Stok Produk</div>
+      <div class="page-content lp-page">
+        
+        <!-- Filter Bar -->
+        <div class="filter-bar">
+          <div class="filter-group">
+            <label for="timeFilter">Rentang Waktu:</label>
+            <select id="timeFilter" class="filter-select">
+              <option value="today">Hari Ini</option>
+              <option value="week">7 Hari Terakhir</option>
+              <option value="month">Bulan Ini</option>
+              <option value="all">Semua Waktu</option>
+            </select>
           </div>
-          <div class="stat-card red">
-            <div class="stat-icon">⚠️</div>
-            <div class="stat-value" id="stokMenipis">0</div>
-            <div class="stat-label">Stok Menipis (&lt; 10)</div>
+          <div class="filter-actions">
+            <button class="btn-export" onclick="window.print()">🖨️ Cetak Laporan</button>
           </div>
         </div>
 
-        <div class="table-section cek-stok-table-section">
-          <div class="table-section-header cek-stok-table-header">
-            <h3 class="cek-stok-table-title">📋 Data Stok Produk</h3>
-            <div class="table-actions cek-stok-table-actions">
-              <input type="text" id="searchStok" placeholder="🔍 Cari produk..." class="table-search cek-stok-search" />
-              <select id="filterKategori" class="table-filter cek-stok-filter">
-                <option value="all">Semua Kategori</option>
-                <option value="Frame">Frame</option>
-                <option value="Lensa">Lensa</option>
-                <option value="Sunglasses">Sunglasses</option>
-                <option value="Lensa Kontak">Lensa Kontak</option>
-                <option value="Aksesoris">Aksesoris</option>
-              </select>
+        <!-- Summary Cards -->
+        <div class="stats-grid lp-stats">
+          <div class="stat-card blue">
+            <div class="stat-icon">💰</div>
+            <div class="stat-value" id="totPendapatan">Rp 0</div>
+            <div class="stat-label">Total Pendapatan</div>
+          </div>
+          <div class="stat-card teal">
+            <div class="stat-icon">🧾</div>
+            <div class="stat-value" id="totTransaksi">0</div>
+            <div class="stat-label">Jumlah Transaksi</div>
+          </div>
+          <div class="stat-card green">
+            <div class="stat-icon">👓</div>
+            <div class="stat-value" id="totItemTerjual">0</div>
+            <div class="stat-label">Item Terjual</div>
+          </div>
+        </div>
+
+        <!-- Table -->
+        <div class="table-section">
+          <div class="table-section-header">
+            <h3>Daftar Transaksi</h3>
+            <div class="table-actions">
+              <input type="text" id="searchTx" placeholder="🔍 Cari Invoice/Kasir..." class="filter-search" />
             </div>
           </div>
-          <div class="table-wrapper cek-stok-table-wrapper">
-            <table id="stokTable">
+          <div class="table-wrapper">
+            <table id="salesTable">
               <thead>
                 <tr>
-                  <th>ID</th>
-                  <th>Nama Produk</th>
-                  <th>Kategori</th>
-                  <th>Merek</th>
-                  <th>Harga</th>
-                  <th>Stok</th>
-                  <th>Status</th>
+                  <th>Tanggal & Waktu</th>
+                  <th>No. Invoice</th>
+                  <th>Kasir</th>
+                  <th>Item Terjual</th>
+                  <th>Metode</th>
+                  <th>Total</th>
                 </tr>
               </thead>
-              <tbody id="stokTableBody">
+              <tbody id="salesTableBody">
                 <!-- Rendered by JS -->
               </tbody>
             </table>
           </div>
-          <div class="table-footer cek-stok-table-footer">
-            <span class="table-info" id="stokInfo">Menampilkan 0 produk</span>
+          <div class="table-footer">
+            <span class="table-info" id="salesInfo">Menampilkan 0 transaksi</span>
           </div>
         </div>
+
       </div>
     </main>
   </div>
 
   <script src="../config/config.js"></script>
   <script src="../assets/js/app.js?v=4"></script>
-  <script src="../assets/js/cek-stok.js"></script>
+  <script src="../assets/js/laporan-penjualan.js?v=1"></script>
 </body>
 </html>

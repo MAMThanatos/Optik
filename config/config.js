@@ -258,3 +258,41 @@ function generateInvoice() {
   const rand = String(Math.floor(Math.random() * 999) + 1).padStart(3, "0");
   return "INV-" + date + "-" + rand;
 }
+
+/**
+ * Fungsi untuk mengambil data transaksi dari localStorage
+ */
+function getTransactions() {
+  const stored = localStorage.getItem("pos_transactions");
+  if (stored) {
+    return JSON.parse(stored);
+  }
+  return [];
+}
+
+/**
+ * Fungsi untuk menyimpan data transaksi ke localStorage
+ */
+function saveTransactions(transactions) {
+  localStorage.setItem("pos_transactions", JSON.stringify(transactions));
+}
+
+/**
+ * Fungsi untuk mengambil data produk dari localStorage (atau default PRODUCTS)
+ */
+function getProducts() {
+  const stored = localStorage.getItem("pos_products");
+  if (stored) {
+    return JSON.parse(stored);
+  }
+  // Initialize with default
+  localStorage.setItem("pos_products", JSON.stringify(PRODUCTS));
+  return PRODUCTS;
+}
+
+/**
+ * Fungsi untuk menyimpan data produk ke localStorage
+ */
+function saveProducts(products) {
+  localStorage.setItem("pos_products", JSON.stringify(products));
+}

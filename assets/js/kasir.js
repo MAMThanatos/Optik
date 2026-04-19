@@ -5,6 +5,7 @@
 let cart = [];
 let selectedPaymentMethod = null;
 let selectedBank = null;
+let currentProducts = [];
 
 document.addEventListener("DOMContentLoaded", function () {
   initKasirPage();
@@ -29,8 +30,9 @@ function initKasirPage() {
   setupLogout();
   updateDate();
 
+  currentProducts = getProducts();
   // Render products
-  renderProducts(PRODUCTS);
+  renderProducts(currentProducts);
 
   // Setup search & filter
   setupSearch();
@@ -141,7 +143,7 @@ function filterProducts() {
   const activeCat = document.querySelector(".cat-btn.active");
   const category = activeCat ? activeCat.getAttribute("data-cat") : "all";
 
-  let filtered = PRODUCTS.filter((p) => {
+  let filtered = currentProducts.filter((p) => {
     const matchSearch =
       p.nama.toLowerCase().includes(searchVal) ||
       p.merek.toLowerCase().includes(searchVal) ||
@@ -157,7 +159,7 @@ function filterProducts() {
  * Add product to cart
  */
 function addToCart(productId) {
-  const product = PRODUCTS.find((p) => p.id === productId);
+  const product = currentProducts.find((p) => p.id === productId);
   if (!product) return;
 
   const existingItem = cart.find((item) => item.id === productId);
@@ -566,6 +568,37 @@ function confirmPayment() {
       ? parseInt(document.getElementById("cashInput").value) || 0
       : 0;
   const kembalian = selectedPaymentMethod === "tunai" ? cashValue - grandTotal : 0;
+
+  // Deduct stock
+  cart.forEach(item => {
+    let p = currentProducts.find(prod => prod.id === item.id);
+    if(p) {
+      p.stok -= item.qty;
+    }
+  });
+  saveProducts(currentProducts);
+
+  // Save transaction
+  const transaction = {
+    id: invoiceNo,
+    tanggal: now.toISOString(),
+    kasirId: session ? session.id : "-",
+    kasirNama: session ? session.nama : "-",
+    cabang: session ? session.cabang : "-",
+    items: cart.map(item => ({...item})),
+    subtotal: subtotal,
+    diskonPersen: discountPercent,
+    diskonNominal: discountAmount,
+    total: grandTotal,
+    metodePembayaran: methodInfo ? methodInfo.id : "-",
+    bank: selectedBank,
+    uangDiterima: cashValue,
+    kembalian: kembalian
+  };
+
+  const txs = getTransactions();
+  txs.push(transaction);
+  saveTransactions(txs);
 
   // Build receipt
   const receiptContent = document.getElementById("receiptContent");
