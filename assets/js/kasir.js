@@ -601,13 +601,16 @@ function confirmPayment() {
   saveTransactions(txs);
 
   // Build receipt
+  const profile = getStoreProfile();
+  const footerMessage = profile.pesan_struk.replace(/\n/g, '<br>');
+
   const receiptContent = document.getElementById("receiptContent");
   if (receiptContent) {
     receiptContent.innerHTML = `
       <div class="receipt-header-section">
-        <h3>OPTIK SEJAHTERA</h3>
-        <p>Jl. Merdeka No. 123, Jakarta</p>
-        <p>Telp: (021) 1234-5678</p>
+        <h3>${profile.nama}</h3>
+        <p>${profile.alamat}</p>
+        <p>Telp: ${profile.telepon}</p>
       </div>
 
       <div class="receipt-info">
@@ -638,25 +641,23 @@ function confirmPayment() {
         <div><span>Subtotal</span><span>${formatRupiah(subtotal)}</span></div>
         ${
           discountPercent > 0
-            ? `<div><span>Diskon (${discountPercent}%)</span><span>- ${formatRupiah(discountAmount)}</span></div>`
+            ? `<div class="discount-row"><span>Diskon (${discountPercent}%)</span><span>-${formatRupiah(
+                discountAmount
+              )}</span></div>`
             : ""
         }
-        <div class="receipt-grand"><span>TOTAL</span><span>${formatRupiah(grandTotal)}</span></div>
-        <div><span>Pembayaran</span><span>${methodName}${selectedBank ? " (" + selectedBank + ")" : ""}</span></div>
-        ${
-          selectedPaymentMethod === "tunai"
-            ? `
-          <div><span>Tunai</span><span>${formatRupiah(cashValue)}</span></div>
-          <div><span>Kembalian</span><span>${formatRupiah(kembalian)}</span></div>
-        `
-            : ""
-        }
+        <div class="grand-total-row"><span>Total</span><span>${formatRupiah(
+          grandTotal
+        )}</span></div>
+        <div style="margin-top: 10px; padding-top: 10px; border-top: 1px dashed #ddd;"></div>
+        <div><span>Dibayar (${
+          selectedPaymentMethod.toUpperCase()
+        })</span><span>${formatRupiah(cashValue)}</span></div>
+        <div><span>Kembali</span><span>${formatRupiah(kembalian)}</span></div>
       </div>
 
       <div class="receipt-footer-section">
-        <p>Terima kasih atas kunjungan Anda!</p>
-        <p>Garansi frame 1 tahun</p>
-        <p style="margin-top:8px;">~ OptikPOS v1.0 ~</p>
+        <p>${footerMessage}</p>
       </div>
     `;
   }

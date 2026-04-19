@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pengaturan - OptikPOS</title>
+  <link rel="stylesheet" href="../assets/css/style.css?v=6" />
+  <style>
+    .settings-container {
+      background: white;
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+      max-width: 600px;
+    }
+    .settings-header {
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border-color, #e5e7eb);
+    }
+    .settings-header h2 {
+      margin: 0;
+      color: var(--primary);
+      font-size: 1.5rem;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+    .form-group input, .form-group textarea {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1px solid var(--border-color, #e5e7eb);
+      border-radius: 8px;
+      background-color: #f9fafb;
+      font-family: inherit;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+    .form-group input:focus, .form-group textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+      background-color: white;
+      box-shadow: 0 0 0 3px rgba(44, 122, 123, 0.1);
+    }
+    .form-group textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+    .help-text {
+      display: block;
+      margin-top: 6px;
+      font-size: 0.85rem;
+      color: var(--text-muted, #6b7280);
+    }
+    .btn-save {
+      background: linear-gradient(135deg, var(--accent), #2C7A7B);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+      font-size: 15px;
+      transition: all 0.2s;
+    }
+    .btn-save:hover {
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      transform: translateY(-1px);
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard-wrapper">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="brand-info">
+          <h2>OptikPOS</h2>
+          <span class="js-sidebar-role">Branch Manager</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-section-title">Menu Utama</div>
+        <a href="dashboard-manager.html" class="nav-item js-nav-dashboard">
+          <span class="nav-icon">📊</span>
+          <span>Dashboard</span>
+        </a>
+        <a href="kasir.html" class="nav-item">
+          <span class="nav-icon">🛒</span>
+          <span>Kasir</span>
+        </a>
+        <a href="input-kacamata.html" class="nav-item js-manager-only">
+          <span class="nav-icon">👓</span>
+          <span>Input Kacamata</span>
+        </a>
+        <a href="cek-stok.html" class="nav-item">
+          <span class="nav-icon">📦</span>
+          <span>Cek Stok</span>
+        </a>
+
+        <div class="js-manager-menus">
+          <div class="nav-section-title">Manajemen</div>
+          <a href="manajemen-karyawan.html" class="nav-item">
+            <span class="nav-icon">👥</span>
+            <span>Manajemen Karyawan</span>
+          </a>
+          <a href="laporan-penjualan.html" class="nav-item">
+            <span class="nav-icon">📋</span>
+            <span>Laporan Penjualan</span>
+          </a>
+          <a href="laporan-keuangan.html" class="nav-item">
+            <span class="nav-icon">💰</span>
+            <span>Laporan Keuangan</span>
+          </a>
+
+          <div class="nav-section-title">Pengaturan</div>
+          <a href="pengaturan.html" class="nav-item active">
+            <span class="nav-icon">⚙️</span>
+            <span>Pengaturan</span>
+          </a>
+        </div>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-info">
+          <div class="user-avatar js-user-avatar">??</div>
+          <div class="user-details">
+            <div class="user-name js-user-name">User</div>
+            <div class="user-role js-user-role">Role</div>
+          </div>
+        </div>
+        <button id="btnLogout" class="btn-logout">
+          <span>🚪</span>
+          <span>Keluar</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Top Header -->
+      <header class="top-header">
+        <h1>⚙️ Pengaturan</h1>
+        <div class="header-right">
+          <div class="header-date">
+            📅 <span class="js-date">-</span>
+          </div>
+          <span class="header-badge badge-manager js-header-badge">Branch Manager</span>
+        </div>
+      </header>
+
+      <!-- Page Content -->
+      <div class="page-content" style="padding: 24px;">
+        
+        <div class="settings-container">
+          <div class="settings-header">
+            <h2>Profil Optik & Struk</h2>
+          </div>
+
+          <form id="storeProfileForm">
+            <div class="form-group">
+              <label for="storeName">Nama Optik</label>
+              <input type="text" id="storeName" required placeholder="Contoh: Optik Sejahtera">
+              <span class="help-text">Nama ini akan tercetak tebal di bagian paling atas struk belanja.</span>
+            </div>
+
+            <div class="form-group">
+              <label for="storeAddress">Alamat Lengkap</label>
+              <input type="text" id="storeAddress" required placeholder="Contoh: Jl. Merdeka No. 123, Jakarta">
+            </div>
+
+            <div class="form-group">
+              <label for="storePhone">Nomor Telepon / WA</label>
+              <input type="text" id="storePhone" required placeholder="Contoh: 0812-3456-7890">
+            </div>
+
+            <div class="form-group">
+              <label for="receiptMessage">Catatan Kaki Struk (Pesan Penutup)</label>
+              <textarea id="receiptMessage" required placeholder="Tuliskan garansi atau ucapan terima kasih di sini..."></textarea>
+              <span class="help-text">Pesan ini akan tercetak di bagian paling bawah struk kasir. Gunakan *Enter* untuk membuat baris baru.</span>
+            </div>
+
+            <button type="submit" class="btn-save">💾 Simpan Pengaturan</button>
+          </form>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script src="../config/config.js"></script>
+  <script src="../assets/js/app.js?v=6"></script>
+  <script src="../assets/js/pengaturan.js?v=1"></script>
+</body>
+</html>

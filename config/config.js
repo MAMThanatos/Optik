@@ -314,3 +314,28 @@ function getExpenses() {
 function saveExpenses(expenses) {
   localStorage.setItem("pos_expenses", JSON.stringify(expenses));
 }
+
+/**
+ * Fungsi untuk mendapatkan Profil Toko (Nama, Alamat, Pesan Struk)
+ */
+function getStoreProfile() {
+  const defaultProfile = {
+    nama: "OPTIK SEJAHTERA",
+    alamat: "Jl. Merdeka No. 123, Jakarta",
+    telepon: "(021) 1234-5678",
+    pesan_struk: "Terima kasih atas kunjungan Anda.\nBarang yang sudah dibeli tidak dapat dikembalikan.\nGaransi frame 1 tahun."
+  };
+  
+  const stored = localStorage.getItem("pos_store_profile");
+  if (stored) {
+    return { ...defaultProfile, ...JSON.parse(stored) };
+  }
+  return defaultProfile;
+}
+
+/**
+ * Fungsi untuk menyimpan Profil Toko
+ */
+function saveStoreProfile(profile) {
+  localStorage.setItem("pos_store_profile", JSON.stringify(profile));
+}

@@ -12,7 +12,8 @@ function initApp() {
     path.includes("manajemen-karyawan.html") || 
     path.includes("input-kacamata.html") ||
     path.includes("laporan-penjualan.html") ||
-    path.includes("laporan-keuangan.html")
+    path.includes("laporan-keuangan.html") ||
+    path.includes("pengaturan.html")
   ) {
     initDashboard("branch_manager");
   } else if (path.includes("dashboard-kasir.html")) {
