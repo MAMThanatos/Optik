@@ -43,6 +43,17 @@ CREATE TABLE detail_transaksi (
     FOREIGN KEY (id_kacamata) REFERENCES kacamata(id_kacamata)
 );
 
+-- 5. Tabel Pengeluaran (Catatan Biaya Operasional)
+CREATE TABLE pengeluaran (
+    id_pengeluaran VARCHAR(50) PRIMARY KEY, -- Contoh: EXP-1698239012
+    tanggal DATETIME DEFAULT CURRENT_TIMESTAMP,
+    kategori VARCHAR(50) NOT NULL,
+    keterangan TEXT,
+    nominal DECIMAL(10,2) NOT NULL,
+    id_pengguna INT NOT NULL,
+    FOREIGN KEY (id_pengguna) REFERENCES pengguna(id_pengguna)
+);
+
 -- --- Data Awal (Dummy) ---
 -- Password disimpan dalam bentuk plain text DULU untuk testing. 
 -- Nanti di PHP akan kita amankan menggunakan password_hash()
