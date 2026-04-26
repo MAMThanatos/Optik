@@ -45,7 +45,7 @@ function setupSidebarForInput(session) {
   const sidebarRole = document.querySelector(".js-sidebar-role");
   const headerBadge = document.querySelector(".js-header-badge");
 
-  if (session.role === "branch_manager") {
+  if (session.role === "manager") {
     if (navDashboard) navDashboard.href = "dashboard-manager.html";
     if (managerMenus) managerMenus.style.display = "block";
     if (sidebarRole) sidebarRole.textContent = "Branch Manager";

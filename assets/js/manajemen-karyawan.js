@@ -6,14 +6,30 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // Hanya Branch Manager yang boleh akses
-  if (session.role !== "branch_manager") {
+  if (session.role !== "manager") {
     window.location.href = "dashboard-kasir.html";
     return;
   }
 
   // Load and Render Users
-  let usersData = getUsers();
+  let usersData = [];
   const searchInput = document.getElementById("searchKaryawan");
+
+  async function loadUsers() {
+    try {
+      const response = await fetch("../api/get_karyawan.php");
+      const result = await response.json();
+      if (result.status === "success") {
+        usersData = result.data;
+        renderTable();
+      } else {
+        alert("Gagal memuat data: " + result.message);
+      }
+    } catch (e) {
+      console.error(e);
+      alert("Terjadi kesalahan jaringan.");
+    }
+  }
 
   function renderTable() {
     const tbody = document.getElementById("karyawanTableBody");
@@ -29,7 +45,7 @@ document.addEventListener("DOMContentLoaded", function () {
     filtered.forEach(u => {
       const tr = document.createElement("tr");
       
-      let roleBadge = u.role === "branch_manager" 
+      let roleBadge = u.role === "manager" 
         ? '<span class="role-badge role-manager">Branch Manager</span>'
         : '<span class="role-badge role-kasir">Kasir</span>';
 
@@ -54,7 +70,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   searchInput.addEventListener("input", renderTable);
-  renderTable();
+  loadUsers();
 
   // --- Modal Logic ---
   const modal = document.getElementById("karyawanModal");
@@ -120,7 +136,7 @@ document.addEventListener("DOMContentLoaded", function () {
   };
 
   // Save Employee
-  document.getElementById("btnSaveKaryawan").addEventListener("click", (e) => {
+  document.getElementById("btnSaveKaryawan").addEventListener("click", async (e) => {
     e.preventDefault();
     
     if (!form.checkValidity()) {
@@ -129,48 +145,35 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     const mode = formMode.value;
-    const newId = inputId.value.trim();
+    const newId = inputId.value.trim(); // Username
     
-    if (mode === "add") {
-      // Check if ID exists
-      if (usersData.some(u => u.id === newId)) {
-        alert("ID Karyawan sudah terdaftar! Silakan gunakan ID lain.");
-        return;
-      }
-      
-      const newUser = {
-        id: newId,
-        nama: inputNama.value.trim(),
-        password: inputPassword.value.trim(),
-        role: "karyawan"
-      };
-      
-      usersData.push(newUser);
-      saveUsers(usersData);
-      showToast("Karyawan berhasil ditambahkan!");
-      
-    } else if (mode === "edit") {
-      const targetId = originalId.value;
-      const userIndex = usersData.findIndex(u => u.id === targetId);
-      
-      if (userIndex !== -1) {
-        usersData[userIndex].nama = inputNama.value.trim();
-        usersData[userIndex].password = inputPassword.value.trim();
-        
-        saveUsers(usersData);
-        showToast("Data karyawan berhasil diperbarui!");
-        
-        // If editing own profile, update session
-        if (targetId === session.id) {
-          setSession(usersData[userIndex]);
-          // Optionally update UI elements directly
-          document.querySelector(".js-user-name").textContent = usersData[userIndex].nama;
-        }
-      }
-    }
+    try {
+      const response = await fetch("../api/simpan_karyawan.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          mode: mode,
+          id: newId,
+          original_id: originalId.value,
+          nama: inputNama.value.trim(),
+          password: inputPassword.value.trim(),
+          role: "karyawan" // Selalu jadikan karyawan by default
+        })
+      });
 
-    closeAndResetModal();
-    renderTable();
+      const result = await response.json();
+
+      if (result.status === "success") {
+        showToast(result.message);
+        closeAndResetModal();
+        loadUsers(); // Reload dari database
+      } else {
+        alert("Gagal: " + result.message);
+      }
+    } catch(err) {
+      console.error(err);
+      alert("Terjadi kesalahan jaringan saat menyimpan data.");
+    }
   });
 
   // --- Delete Logic ---
@@ -194,14 +197,29 @@ document.addEventListener("DOMContentLoaded", function () {
   btnCloseDelete.addEventListener("click", closeDeleteModal);
   btnCancelDelete.addEventListener("click", closeDeleteModal);
 
-  btnConfirmDelete.addEventListener("click", () => {
+  btnConfirmDelete.addEventListener("click", async () => {
     const targetId = deleteKaryawanId.value;
-    usersData = usersData.filter(u => u.id !== targetId);
-    saveUsers(usersData);
     
-    closeDeleteModal();
-    renderTable();
-    showToast("Karyawan berhasil dihapus!");
+    try {
+      const response = await fetch("../api/hapus_karyawan.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: targetId })
+      });
+      
+      const result = await response.json();
+      
+      if (result.status === "success") {
+        showToast(result.message);
+        closeDeleteModal();
+        loadUsers(); // Reload dari database
+      } else {
+        alert("Gagal: " + result.message);
+      }
+    } catch(err) {
+      console.error(err);
+      alert("Terjadi kesalahan jaringan saat menghapus data.");
+    }
   });
 
   // --- Toast Notification ---

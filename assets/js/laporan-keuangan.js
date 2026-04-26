@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", function () {
     return;
   }
 
-  if (session.role !== "branch_manager") {
+  if (session.role !== "manager") {
     window.location.href = "dashboard-kasir.html";
     return;
   }

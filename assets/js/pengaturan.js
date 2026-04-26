@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // Hanya Branch Manager yang boleh akses pengaturan
-  if (session.role !== "branch_manager") {
+  if (session.role !== "manager") {
     window.location.href = "dashboard-kasir.html";
     return;
   }

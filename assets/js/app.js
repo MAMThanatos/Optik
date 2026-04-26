@@ -15,7 +15,7 @@ function initApp() {
     path.includes("laporan-keuangan.html") ||
     path.includes("pengaturan.html")
   ) {
-    initDashboard("branch_manager");
+    initDashboard("manager");
   } else if (path.includes("dashboard-kasir.html")) {
     initDashboard("karyawan");
   } else if (path.includes("cek-stok.html") || path.includes("kasir.html")) {
@@ -39,30 +39,47 @@ function initLoginPage() {
 
   clearSession();
 
-  form.addEventListener("submit", function (e) {
+  form.addEventListener("submit", async function (e) {
     e.preventDefault();
 
     const userId = document.getElementById("userId").value.trim();
     const password = document.getElementById("password").value.trim();
 
     if (!userId || !password) {
-      showError(errorEl, "Mohon isi ID dan Password.");
+      showError(errorEl, "Mohon isi Username dan Password.");
       return;
     }
 
-    const user = authenticateUser(userId, password);
+    try {
+      const response = await fetch("../api/login.php", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          username: userId,
+          password: password
+        })
+      });
 
-    if (user) {
-      setSession(user);
+      const result = await response.json();
 
-      // Redirect based on role
-      if (user.role === "branch_manager") {
-        window.location.href = "dashboard-manager.html";
+      if (result.status === "success") {
+        // Simpan data dari database ke session (LocalStorage)
+        setSession(result.data);
+
+        // Redirect based on role
+        if (result.data.role === "manager") {
+          window.location.href = "dashboard-manager.html";
+        } else {
+          window.location.href = "dashboard-kasir.html";
+        }
       } else {
-        window.location.href = "dashboard-kasir.html";
+        showError(errorEl, result.message || "Username atau Password salah.");
       }
-    } else {
-      showError(errorEl, "ID atau Password salah. Silakan coba lagi.");
+    } catch (error) {
+      console.error(error);
+      showError(errorEl, "Terjadi kesalahan koneksi ke server.");
     }
   });
 }
@@ -80,7 +97,7 @@ function initDashboard(expectedRole) {
   }
 
   if (session.role !== expectedRole) {
-    if (session.role === "branch_manager") {
+    if (session.role === "manager") {
       window.location.href = "dashboard-manager.html";
     } else {
       window.location.href = "dashboard-kasir.html";
@@ -102,7 +119,7 @@ function initDashboard(expectedRole) {
   const managerMenus = document.querySelectorAll(".js-manager-menus");
   const managerOnlyNavs = document.querySelectorAll(".js-manager-only");
   
-  if (session.role === "branch_manager") {
+  if (session.role === "manager") {
     managerMenus.forEach(el => el.style.display = "block");
     managerOnlyNavs.forEach(el => el.style.display = "flex");
   } else {
@@ -131,7 +148,7 @@ function populateUserInfo(user) {
   nameEls.forEach((el) => (el.textContent = user.nama));
   roleEls.forEach((el) => {
     el.textContent =
-      user.role === "branch_manager" ? "Branch Manager" : "Karyawan / Kasir";
+      user.role === "manager" ? "Branch Manager" : "Karyawan / Kasir";
   });
   avatarEls.forEach((el) => (el.textContent = initials));
 

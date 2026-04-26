@@ -9,23 +9,7 @@ const APP_CONFIG = {
   companyName: "Optik Sejahtera",
 };
 
-// Data user dummy (nanti diganti dengan database)
-const USERS = [
-  {
-    id: "BM001",
-    password: "manager123",
-    nama: "Budi Santoso",
-    role: "branch_manager",
-    cabang: "Cabang Utama",
-  },
-  {
-    id: "KR001",
-    password: "kasir123",
-    nama: "Andi Pratama",
-    role: "karyawan",
-    cabang: "Cabang Utama",
-  },
-];
+
 
 // Data produk kacamata dummy
 const PRODUCTS = [
@@ -189,36 +173,7 @@ const PAYMENT_METHODS = [
   { id: "qris", nama: "QRIS", icon: "📱", desc: "Scan QR Code" },
 ];
 
-/**
- * Fungsi untuk mengambil data users dari localStorage (atau default USERS)
- */
-function getUsers() {
-  const storedUsers = localStorage.getItem("pos_users");
-  if (storedUsers) {
-    return JSON.parse(storedUsers);
-  }
-  // Initialize with default
-  localStorage.setItem("pos_users", JSON.stringify(USERS));
-  return USERS;
-}
 
-/**
- * Fungsi untuk menyimpan data users ke localStorage
- */
-function saveUsers(users) {
-  localStorage.setItem("pos_users", JSON.stringify(users));
-}
-
-/**
- * Fungsi untuk autentikasi user
- */
-function authenticateUser(userId, password) {
-  const currentUsers = getUsers();
-  const user = currentUsers.find(
-    (u) => u.id === userId && u.password === password
-  );
-  return user || null;
-}
 
 /**
  * Simpan session user ke localStorage

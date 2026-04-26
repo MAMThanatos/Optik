@@ -12,21 +12,21 @@ document.addEventListener("DOMContentLoaded", function () {
   const inputKacamataLink = document.querySelector(".js-nav-input");
   const managerMenus = document.querySelector(".js-manager-menus");
   
-  if (roleEl) roleEl.textContent = session.role === "branch_manager" ? "Branch Manager" : "Kasir";
+  if (roleEl) roleEl.textContent = session.role === "manager" ? "Branch Manager" : "Kasir";
   if (badgeEl) {
-    badgeEl.textContent = session.role === "branch_manager" ? "Branch Manager" : "Kasir";
-    badgeEl.className = `header-badge ${session.role === "branch_manager" ? 'badge-manager' : 'badge-kasir'} js-header-badge`;
+    badgeEl.textContent = session.role === "manager" ? "Branch Manager" : "Kasir";
+    badgeEl.className = `header-badge ${session.role === "manager" ? 'badge-manager' : 'badge-kasir'} js-header-badge`;
   }
   
   if (dashboardLink) {
-    dashboardLink.href = session.role === "branch_manager" ? "dashboard-manager.html" : "dashboard-kasir.html";
+    dashboardLink.href = session.role === "manager" ? "dashboard-manager.html" : "dashboard-kasir.html";
   }
 
-  if (session.role !== "branch_manager" && inputKacamataLink) {
+  if (session.role !== "manager" && inputKacamataLink) {
     inputKacamataLink.style.display = "none";
   }
 
-  if (session.role === "branch_manager" && managerMenus) {
+  if (session.role === "manager" && managerMenus) {
     managerMenus.style.display = "block";
   }
 
