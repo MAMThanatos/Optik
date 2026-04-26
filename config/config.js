@@ -4,7 +4,7 @@
  */
 
 const APP_CONFIG = {
-  appName: "OptikPOS",
+  appName: "Optik Lucky Prastica",
   appVersion: "1.0.0",
   companyName: "Optik Sejahtera",
 };
@@ -153,7 +153,7 @@ const PRODUCTS = [
     id: "PRD013",
     nama: "Case Kacamata Premium",
     kategori: "Aksesoris",
-    merek: "OptikPOS",
+    merek: "Optik Lucky Prastica",
     harga: 120000,
     stok: 45,
     ukuranLensa: "-",
@@ -163,7 +163,7 @@ const PRODUCTS = [
     id: "PRD014",
     nama: "Kain Microfiber Pembersih",
     kategori: "Aksesoris",
-    merek: "OptikPOS",
+    merek: "Optik Lucky Prastica",
     harga: 25000,
     stok: 100,
     ukuranLensa: "-",
