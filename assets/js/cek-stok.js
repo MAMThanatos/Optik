@@ -30,14 +30,22 @@ document.addEventListener("DOMContentLoaded", function () {
     managerMenus.style.display = "block";
   }
 
-  // Load products from localStorage or use dummy
+  // Load products from API
   let products = [];
-  const storedProducts = localStorage.getItem("pos_products");
-  if (storedProducts) {
-    products = JSON.parse(storedProducts);
-  } else {
-    products = PRODUCTS;
-    localStorage.setItem("pos_products", JSON.stringify(products));
+  
+  async function loadProducts() {
+    try {
+      const response = await fetch("../api/get_barang.php");
+      const result = await response.json();
+      if (result.status === "success") {
+        products = result.data;
+        renderTable();
+      } else {
+        console.error("Gagal memuat stok:", result.message);
+      }
+    } catch (e) {
+      console.error("Kesalahan jaringan:", e);
+    }
   }
 
   const searchInput = document.getElementById("searchStok");
@@ -49,7 +57,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const category = filterSelect.value;
 
     let filtered = products.filter(p => {
-      const matchSearch = p.nama.toLowerCase().includes(query) || p.id.toLowerCase().includes(query);
+      const matchSearch = (p.nama || "").toLowerCase().includes(query) || (p.id || "").toLowerCase().includes(query);
       const matchCat = category === "all" || p.kategori === category;
       return matchSearch && matchCat;
     });
@@ -93,5 +101,5 @@ document.addEventListener("DOMContentLoaded", function () {
   searchInput.addEventListener("input", renderTable);
   filterSelect.addEventListener("change", renderTable);
 
-  renderTable();
+  loadProducts();
 });

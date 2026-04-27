@@ -65,23 +65,29 @@ function setupSidebarForInput(session) {
 }
 
 /**
- * Load products from localStorage or defaults
+ * Load products from database
  */
-function loadProducts() {
-  const stored = localStorage.getItem("pos_products");
-  if (stored) {
-    productList = JSON.parse(stored);
-  } else {
-    productList = JSON.parse(JSON.stringify(PRODUCTS));
-    saveProducts();
+async function loadProducts() {
+  try {
+    const response = await fetch("../api/get_barang.php");
+    const result = await response.json();
+    if (result.status === "success") {
+      productList = result.data;
+      renderProductTable(productList);
+      updateStats();
+    } else {
+      console.error("Gagal memuat barang:", result.message);
+    }
+  } catch (error) {
+    console.error("Kesalahan jaringan:", error);
   }
 }
 
 /**
- * Save products to localStorage
+ * (Not used directly anymore, save handled by API)
  */
 function saveProducts() {
-  localStorage.setItem("pos_products", JSON.stringify(productList));
+  // Kosong, sudah menggunakan database
 }
 
 /**
@@ -191,7 +197,7 @@ function setupFormEvents() {
   const form = document.getElementById("productForm");
   if (!form) return;
 
-  form.addEventListener("submit", function (e) {
+  form.addEventListener("submit", async function (e) {
     e.preventDefault();
 
     const nama = document.getElementById("inputNama").value.trim();
@@ -207,8 +213,10 @@ function setupFormEvents() {
       return;
     }
 
+    const newId = generateProductId();
     const newProduct = {
-      id: generateProductId(),
+      mode: "add",
+      id: newId,
       nama: nama,
       kategori: kategori,
       merek: merek,
@@ -218,17 +226,25 @@ function setupFormEvents() {
       deskripsi: deskripsi,
     };
 
-    productList.push(newProduct);
-    saveProducts();
+    try {
+      const response = await fetch("../api/simpan_barang.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newProduct)
+      });
+      const result = await response.json();
 
-    // Reset form
-    form.reset();
-
-    // Re-render
-    filterAndRender();
-    updateStats();
-
-    showToast("✅", `Produk "${nama}" berhasil ditambahkan!`);
+      if (result.status === "success") {
+        form.reset();
+        await loadProducts(); // Reload from db
+        showToast("✅", `Produk "${nama}" berhasil ditambahkan!`);
+      } else {
+        showToast("❌", result.message);
+      }
+    } catch (error) {
+      console.error(error);
+      showToast("❌", "Terjadi kesalahan jaringan.");
+    }
   });
 }
 
@@ -344,11 +360,8 @@ function closeEditModal() {
 /**
  * Save edited product
  */
-function saveEditProduct() {
+async function saveEditProduct() {
   if (!editingProductId) return;
-
-  const product = productList.find((p) => p.id === editingProductId);
-  if (!product) return;
 
   const nama = document.getElementById("editNama").value.trim();
   const merek = document.getElementById("editMerek").value.trim();
@@ -363,20 +376,37 @@ function saveEditProduct() {
     return;
   }
 
-  product.nama = nama;
-  product.merek = merek;
-  product.kategori = kategori;
-  product.ukuranLensa = ukuran;
-  product.harga = harga;
-  product.stok = stok;
-  product.deskripsi = deskripsi;
+  const editData = {
+    mode: "edit",
+    id: editingProductId,
+    nama: nama,
+    kategori: kategori,
+    merek: merek,
+    harga: harga,
+    stok: stok,
+    ukuranLensa: ukuran,
+    deskripsi: deskripsi,
+  };
 
-  saveProducts();
-  closeEditModal();
-  filterAndRender();
-  updateStats();
+  try {
+    const response = await fetch("../api/simpan_barang.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(editData)
+    });
+    const result = await response.json();
 
-  showToast("✅", `Produk "${nama}" berhasil diperbarui!`);
+    if (result.status === "success") {
+        closeEditModal();
+        await loadProducts(); // Reload
+        showToast("✅", `Produk "${nama}" berhasil diperbarui!`);
+    } else {
+        showToast("❌", result.message);
+    }
+  } catch (error) {
+    console.error(error);
+    showToast("❌", "Terjadi kesalahan jaringan.");
+  }
 }
 
 /**
@@ -402,19 +432,33 @@ function closeDeleteModal() {
 /**
  * Confirm delete product
  */
-function confirmDeleteProduct() {
+async function confirmDeleteProduct() {
   if (!deletingProductId) return;
 
   const product = productList.find((p) => p.id === deletingProductId);
   const nama = product ? product.nama : "";
 
-  productList = productList.filter((p) => p.id !== deletingProductId);
-  saveProducts();
-  closeDeleteModal();
-  filterAndRender();
-  updateStats();
+  try {
+    const response = await fetch("../api/hapus_barang.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: deletingProductId })
+    });
+    const result = await response.json();
 
-  showToast("🗑️", `Produk "${nama}" berhasil dihapus!`);
+    if (result.status === "success") {
+      closeDeleteModal();
+      await loadProducts(); // Reload
+      showToast("🗑️", `Produk "${nama}" berhasil dihapus!`);
+    } else {
+      showToast("❌", result.message);
+      closeDeleteModal();
+    }
+  } catch (error) {
+    console.error(error);
+    showToast("❌", "Terjadi kesalahan jaringan.");
+    closeDeleteModal();
+  }
 }
 
 /**
