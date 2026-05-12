@@ -5,7 +5,6 @@ document.addEventListener("DOMContentLoaded", function () {
     return;
   }
 
-  // Hanya Branch Manager yang boleh akses pengaturan
   if (session.role !== "manager") {
     window.location.href = "dashboard-kasir.html";
     return;
@@ -17,14 +16,12 @@ document.addEventListener("DOMContentLoaded", function () {
   const storePhone = document.getElementById("storePhone");
   const receiptMessage = document.getElementById("receiptMessage");
 
-  // Load existing data
   const profile = getStoreProfile();
   storeName.value = profile.nama;
   storeAddress.value = profile.alamat;
   storePhone.value = profile.telepon;
   receiptMessage.value = profile.pesan_struk;
 
-  // Handle Save
   form.addEventListener("submit", function (e) {
     e.preventDefault();
 

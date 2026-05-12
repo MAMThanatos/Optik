@@ -10,15 +10,15 @@ if($result && mysqli_num_rows($result) > 0) {
     while($row = mysqli_fetch_assoc($result)) {
         $barang[] = array(
             "db_id" => $row['id_kacamata'],
-            "id" => $row['kode_barang'], // untuk frontend yg pake 'id' (PRD001)
+            "id" => $row['kode_barang'],
             "nama" => $row['nama_produk'],
             "merek" => $row['merek'],
             "ukuranLensa" => $row['ukuran_lensa'],
             "kategori" => $row['kategori'],
             "deskripsi" => $row['deskripsi'],
-            "harga" => (int)$row['harga_jual'], // frontend pakai 'harga' sebagai harga jual
+            "harga" => (int)$row['harga_jual'],
             "harga_beli" => (int)$row['harga_beli'],
-            "stok" => (int)$row['stok_tersedia'] // frontend pakai 'stok'
+            "stok" => (int)$row['stok_tersedia']
         );
     }
 }

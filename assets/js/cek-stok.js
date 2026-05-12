@@ -5,7 +5,6 @@ document.addEventListener("DOMContentLoaded", function () {
     return;
   }
 
-  // Set up sidebar elements based on role
   const roleEl = document.querySelector(".js-sidebar-role");
   const badgeEl = document.querySelector(".js-header-badge");
   const dashboardLink = document.querySelector(".js-nav-dashboard");
@@ -30,7 +29,6 @@ document.addEventListener("DOMContentLoaded", function () {
     managerMenus.style.display = "block";
   }
 
-  // Load products from API
   let products = [];
   
   async function loadProducts() {
@@ -90,7 +88,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     document.getElementById("stokInfo").textContent = `Menampilkan ${filtered.length} produk`;
 
-    // Update Stats
     const totalStok = products.reduce((acc, p) => acc + p.stok, 0);
     const stokMenipis = products.filter(p => p.stok < 10).length;
 

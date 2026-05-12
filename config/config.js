@@ -11,9 +11,7 @@ const APP_CONFIG = {
 
 
 
-// Data produk kacamata dummy sudah dihapus karena sekarang menggunakan Database MySQL
 
-// Metode pembayaran
 const PAYMENT_METHODS = [
   { id: "tunai", nama: "Tunai", icon: "💵", desc: "Pembayaran cash" },
   { id: "kartu", nama: "Kartu Debit/Kredit", icon: "💳", desc: "Visa, Mastercard, dll" },
@@ -80,7 +78,6 @@ function saveTransactions(transactions) {
   localStorage.setItem("pos_transactions", JSON.stringify(transactions));
 }
 
-// Fungsi getProducts dan saveProducts dihapus karena sudah menggunakan Database
 
 /**
  * Fungsi untuk mengambil data pengeluaran (expenses) dari localStorage

@@ -65,10 +65,8 @@ function initLoginPage() {
       const result = await response.json();
 
       if (result.status === "success") {
-        // Simpan data dari database ke session (LocalStorage)
         setSession(result.data);
 
-        // Redirect based on role
         if (result.data.role === "manager") {
           window.location.href = "dashboard-manager.html";
         } else {
@@ -115,7 +113,6 @@ function initDashboard(expectedRole) {
 
   animateStats();
 
-  // Role-based menu visibility
   const managerMenus = document.querySelectorAll(".js-manager-menus");
   const managerOnlyNavs = document.querySelectorAll(".js-manager-only");
   

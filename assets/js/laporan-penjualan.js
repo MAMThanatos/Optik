@@ -5,18 +5,15 @@ document.addEventListener("DOMContentLoaded", function () {
     return;
   }
 
-  // Hanya Branch Manager yang boleh akses (opsional, disesuaikan)
   if (session.role !== "manager") {
     window.location.href = "dashboard-kasir.html";
     return;
   }
 
-  // DOM Elements
   const timeFilter = document.getElementById("timeFilter");
   const searchInput = document.getElementById("searchTx");
   const tbody = document.getElementById("salesTableBody");
   
-  // Data
   let transactions = getTransactions();
 
   function renderReport() {
@@ -24,7 +21,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const searchVal = searchInput.value.toLowerCase();
     const now = new Date();
     
-    // Filter by Date
     let filteredTxs = transactions.filter(tx => {
       const txDate = new Date(tx.tanggal);
       if (filterVal === "today") {
@@ -36,10 +32,9 @@ document.addEventListener("DOMContentLoaded", function () {
       } else if (filterVal === "month") {
         return txDate.getMonth() === now.getMonth() && txDate.getFullYear() === now.getFullYear();
       }
-      return true; // "all"
+      return true;
     });
 
-    // Filter by Search
     if (searchVal) {
       filteredTxs = filteredTxs.filter(tx => 
         tx.id.toLowerCase().includes(searchVal) || 
@@ -47,10 +42,8 @@ document.addEventListener("DOMContentLoaded", function () {
       );
     }
 
-    // Sort by date (newest first)
     filteredTxs.sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal));
 
-    // Calculate Stats
     let totalPendapatan = 0;
     let totalItem = 0;
     
@@ -62,7 +55,6 @@ document.addEventListener("DOMContentLoaded", function () {
       filteredTxs.forEach(tx => {
         totalPendapatan += tx.total;
         
-        // Item breakdown
         let itemHtml = "";
         let txItemsCount = 0;
         
@@ -72,7 +64,6 @@ document.addEventListener("DOMContentLoaded", function () {
           itemHtml += `<div>${item.qty}x ${item.nama}</div>`;
         });
 
-        // Date format
         const dateObj = new Date(tx.tanggal);
         const dateStr = dateObj.toLocaleDateString("id-ID", { day:"2-digit", month:"short", year:"numeric" });
         const timeStr = dateObj.toLocaleTimeString("id-ID", { hour:"2-digit", minute:"2-digit" });
@@ -93,17 +84,14 @@ document.addEventListener("DOMContentLoaded", function () {
       });
     }
 
-    // Update Summary Cards
     document.getElementById("totPendapatan").textContent = formatRupiah(totalPendapatan);
     document.getElementById("totTransaksi").textContent = filteredTxs.length.toLocaleString("id-ID");
     document.getElementById("totItemTerjual").textContent = totalItem.toLocaleString("id-ID");
     document.getElementById("salesInfo").textContent = `Menampilkan ${filteredTxs.length} transaksi`;
   }
 
-  // Event Listeners
   timeFilter.addEventListener("change", renderReport);
   searchInput.addEventListener("input", renderReport);
 
-  // Initial Render
   renderReport();
 });

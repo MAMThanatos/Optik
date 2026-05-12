@@ -17,32 +17,42 @@ document.addEventListener("DOMContentLoaded", function () {
 function initKasirPage() {
   let session = getSession();
   if (!session) {
-    // Auto-set demo session for preview
-    session = USERS[2]; // KR001 - Andi Pratama (Karyawan)
-    setSession(session);
+    window.location.href = "login.html";
+    return;
   }
 
-  // Setup sidebar based on role
   setupSidebarRole(session);
 
-  // Populate user info
   populateUserInfo(session);
   setupLogout();
   updateDate();
 
-  currentProducts = getProducts();
-  // Render products
-  renderProducts(currentProducts);
+  loadProducts();
 
-  // Setup search & filter
   setupSearch();
   setupCategoryFilter();
 
-  // Setup cart events
   setupCartEvents();
 
-  // Setup payment modal
   setupPaymentModal();
+}
+
+/**
+ * Load products from database
+ */
+async function loadProducts() {
+  try {
+    const response = await fetch("../api/get_barang.php");
+    const result = await response.json();
+    if (result.status === "success") {
+      currentProducts = result.data;
+      renderProducts(currentProducts);
+    } else {
+      console.error("Gagal memuat barang:", result.message);
+    }
+  } catch (e) {
+    console.error("Kesalahan jaringan:", e);
+  }
 }
 
 /**
@@ -284,7 +294,6 @@ function updateTotals() {
  * Setup cart events
  */
 function setupCartEvents() {
-  // Clear cart
   const btnClear = document.getElementById("btnClearCart");
   if (btnClear) {
     btnClear.addEventListener("click", function () {
@@ -297,7 +306,6 @@ function setupCartEvents() {
     });
   }
 
-  // Discount input
   const discountInput = document.getElementById("discountInput");
   if (discountInput) {
     discountInput.addEventListener("input", function () {
@@ -321,7 +329,6 @@ function setupPaymentModal() {
   const btnConfirm = document.getElementById("btnConfirmPay");
   const receiptModal = document.getElementById("receiptModal");
 
-  // Open payment modal
   if (btnPay) {
     btnPay.addEventListener("click", function () {
       if (cart.length === 0) return;
@@ -329,7 +336,6 @@ function setupPaymentModal() {
     });
   }
 
-  // Close payment modal
   if (btnClose) {
     btnClose.addEventListener("click", closePaymentModal);
   }
@@ -337,18 +343,15 @@ function setupPaymentModal() {
     btnCancel.addEventListener("click", closePaymentModal);
   }
 
-  // Confirm payment
   if (btnConfirm) {
     btnConfirm.addEventListener("click", confirmPayment);
   }
 
-  // Cash input
   const cashInput = document.getElementById("cashInput");
   if (cashInput) {
     cashInput.addEventListener("input", handleCashInput);
   }
 
-  // Bank buttons
   const bankBtns = document.querySelectorAll(".bank-btn");
   bankBtns.forEach((btn) => {
     btn.addEventListener("click", function () {
@@ -359,7 +362,6 @@ function setupPaymentModal() {
     });
   });
 
-  // Receipt actions
   const btnPrint = document.getElementById("btnPrint");
   if (btnPrint) {
     btnPrint.addEventListener("click", function () {
@@ -390,13 +392,11 @@ function openPaymentModal() {
   const methodGrid = document.getElementById("methodGrid");
   const btnConfirm = document.getElementById("btnConfirmPay");
 
-  // Reset
   selectedPaymentMethod = null;
   selectedBank = null;
   hideAllPaymentSections();
   if (btnConfirm) btnConfirm.disabled = true;
 
-  // Calculate total
   const subtotal = cart.reduce((sum, item) => sum + item.harga * item.qty, 0);
   const discountPercent =
     parseInt(document.getElementById("discountInput").value) || 0;
@@ -405,7 +405,6 @@ function openPaymentModal() {
 
   if (paymentTotalEl) paymentTotalEl.textContent = formatRupiah(grandTotal);
 
-  // Render payment methods
   if (methodGrid) {
     methodGrid.innerHTML = PAYMENT_METHODS.map(
       (m) => `
@@ -436,7 +435,6 @@ function selectPaymentMethod(methodId) {
   selectedPaymentMethod = methodId;
   selectedBank = null;
 
-  // Update button styles
   const methodBtns = document.querySelectorAll(".method-btn");
   methodBtns.forEach((btn) => {
     btn.classList.toggle(
@@ -445,7 +443,6 @@ function selectPaymentMethod(methodId) {
     );
   });
 
-  // Show relevant section
   hideAllPaymentSections();
 
   if (methodId === "tunai") {
@@ -569,16 +566,21 @@ function confirmPayment() {
       : 0;
   const kembalian = selectedPaymentMethod === "tunai" ? cashValue - grandTotal : 0;
 
-  // Deduct stock
   cart.forEach(item => {
     let p = currentProducts.find(prod => prod.id === item.id);
     if(p) {
       p.stok -= item.qty;
+      fetch("../api/simpan_barang.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+           ...p,
+           mode: "edit"
+        })
+      }).catch(e => console.error("Gagal update stok:", e));
     }
   });
-  saveProducts(currentProducts);
 
-  // Save transaction
   const transaction = {
     id: invoiceNo,
     tanggal: now.toISOString(),
@@ -600,7 +602,6 @@ function confirmPayment() {
   txs.push(transaction);
   saveTransactions(txs);
 
-  // Build receipt
   const profile = getStoreProfile();
   const footerMessage = profile.pesan_struk.replace(/\n/g, '<br>');
 
@@ -662,7 +663,6 @@ function confirmPayment() {
     `;
   }
 
-  // Close payment modal, show receipt
   closePaymentModal();
   const receiptModal = document.getElementById("receiptModal");
   if (receiptModal) receiptModal.classList.add("show");

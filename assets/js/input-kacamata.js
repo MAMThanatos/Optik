@@ -12,24 +12,20 @@ document.addEventListener("DOMContentLoaded", function () {
 function initInputKacamataPage() {
   let session = getSession();
   if (!session) {
-    session = USERS[0]; // BM001 - Budi Santoso (Branch Manager)
-    setSession(session);
+    window.location.href = "login.html";
+    return;
   }
 
-  // Only Branch Manager can access this page
   setupSidebarForInput(session);
   populateUserInfo(session);
   setupLogout();
   updateDate();
 
-  // Load products from localStorage or use defaults
   loadProducts();
 
-  // Render table
   renderProductTable(productList);
   updateStats();
 
-  // Setup events
   setupFormEvents();
   setupTableEvents();
   setupModalEvents();
@@ -86,9 +82,7 @@ async function loadProducts() {
 /**
  * (Not used directly anymore, save handled by API)
  */
-function saveProducts() {
-  // Kosong, sudah menggunakan database
-}
+
 
 /**
  * Generate new product ID
@@ -236,7 +230,7 @@ function setupFormEvents() {
 
       if (result.status === "success") {
         form.reset();
-        await loadProducts(); // Reload from db
+        await loadProducts();
         showToast("✅", `Produk "${nama}" berhasil ditambahkan!`);
       } else {
         showToast("❌", result.message);
@@ -309,7 +303,6 @@ function setupToggleForm() {
  * Setup modal events
  */
 function setupModalEvents() {
-  // Edit modal
   const btnCloseEdit = document.getElementById("btnCloseEdit");
   const btnCancelEdit = document.getElementById("btnCancelEdit");
   const btnSaveEdit = document.getElementById("btnSaveEdit");
@@ -318,7 +311,6 @@ function setupModalEvents() {
   if (btnCancelEdit) btnCancelEdit.addEventListener("click", closeEditModal);
   if (btnSaveEdit) btnSaveEdit.addEventListener("click", saveEditProduct);
 
-  // Delete modal
   const btnCloseDelete = document.getElementById("btnCloseDelete");
   const btnCancelDelete = document.getElementById("btnCancelDelete");
   const btnConfirmDelete = document.getElementById("btnConfirmDelete");
@@ -398,7 +390,7 @@ async function saveEditProduct() {
 
     if (result.status === "success") {
         closeEditModal();
-        await loadProducts(); // Reload
+        await loadProducts();
         showToast("✅", `Produk "${nama}" berhasil diperbarui!`);
     } else {
         showToast("❌", result.message);
@@ -448,7 +440,7 @@ async function confirmDeleteProduct() {
 
     if (result.status === "success") {
       closeDeleteModal();
-      await loadProducts(); // Reload
+      await loadProducts();
       showToast("🗑️", `Produk "${nama}" berhasil dihapus!`);
     } else {
       showToast("❌", result.message);

@@ -5,13 +5,11 @@ document.addEventListener("DOMContentLoaded", function () {
     return;
   }
 
-  // Hanya Branch Manager yang boleh akses
   if (session.role !== "manager") {
     window.location.href = "dashboard-kasir.html";
     return;
   }
 
-  // Load and Render Users
   let usersData = [];
   const searchInput = document.getElementById("searchKaryawan");
 
@@ -49,7 +47,6 @@ document.addEventListener("DOMContentLoaded", function () {
         ? '<span class="role-badge role-manager">Branch Manager</span>'
         : '<span class="role-badge role-kasir">Kasir</span>';
 
-      // Hide password for security visually
       const pwd = u.password || "";
       let maskedPassword = "•".repeat(pwd.length);
 
@@ -72,7 +69,6 @@ document.addEventListener("DOMContentLoaded", function () {
   searchInput.addEventListener("input", renderTable);
   loadUsers();
 
-  // --- Modal Logic ---
   const modal = document.getElementById("karyawanModal");
   const btnCloseModal = document.getElementById("btnCloseModal");
   const btnCancelModal = document.getElementById("btnCancelModal");
@@ -102,7 +98,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   };
 
-  // Keep this just in case, but rely on onclick mainly.
   const btnTambah = document.getElementById("btnTambahKaryawan");
   if(btnTambah) {
     btnTambah.addEventListener("click", window.openModalAddKaryawan);
@@ -119,7 +114,6 @@ document.addEventListener("DOMContentLoaded", function () {
     closeAndResetModal();
   });
 
-  // Global Edit Function
   window.editKaryawan = function(id) {
     const user = usersData.find(u => u.id === id);
     if (!user) return;
@@ -127,7 +121,7 @@ document.addEventListener("DOMContentLoaded", function () {
     formMode.value = "edit";
     originalId.value = user.id;
     inputId.value = user.id;
-    inputId.readOnly = true; // prevent changing ID on edit
+    inputId.readOnly = true;
     inputNama.value = user.nama;
     inputPassword.value = user.password;
     
@@ -135,7 +129,6 @@ document.addEventListener("DOMContentLoaded", function () {
     modal.classList.add("show");
   };
 
-  // Save Employee
   document.getElementById("btnSaveKaryawan").addEventListener("click", async (e) => {
     e.preventDefault();
     
@@ -145,7 +138,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     const mode = formMode.value;
-    const newId = inputId.value.trim(); // Username
+    const newId = inputId.value.trim();
     
     try {
       const response = await fetch("../api/simpan_karyawan.php", {
@@ -157,7 +150,7 @@ document.addEventListener("DOMContentLoaded", function () {
           original_id: originalId.value,
           nama: inputNama.value.trim(),
           password: inputPassword.value.trim(),
-          role: "karyawan" // Selalu jadikan karyawan by default
+          role: "karyawan"
         })
       });
 
@@ -166,7 +159,7 @@ document.addEventListener("DOMContentLoaded", function () {
       if (result.status === "success") {
         showToast(result.message);
         closeAndResetModal();
-        loadUsers(); // Reload dari database
+        loadUsers();
       } else {
         alert("Gagal: " + result.message);
       }
@@ -176,7 +169,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  // --- Delete Logic ---
   const deleteModal = document.getElementById("deleteModal");
   const deleteKaryawanId = document.getElementById("deleteKaryawanId");
   const deleteKaryawanName = document.getElementById("deleteKaryawanName");
@@ -212,7 +204,7 @@ document.addEventListener("DOMContentLoaded", function () {
       if (result.status === "success") {
         showToast(result.message);
         closeDeleteModal();
-        loadUsers(); // Reload dari database
+        loadUsers();
       } else {
         alert("Gagal: " + result.message);
       }
@@ -222,7 +214,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  // --- Toast Notification ---
   function showToast(message) {
     const toast = document.getElementById("toast");
     const toastMsg = document.getElementById("toastMessage");

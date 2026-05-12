@@ -12,7 +12,7 @@ if(isset($data->id) && isset($data->nama) && isset($data->kategori)) {
     $ukuran_lensa = isset($data->ukuranLensa) ? mysqli_real_escape_string($conn, $data->ukuranLensa) : '-';
     $deskripsi = isset($data->deskripsi) ? mysqli_real_escape_string($conn, $data->deskripsi) : '';
     $harga_jual = isset($data->harga) ? (int)$data->harga : 0;
-    $harga_beli = isset($data->harga_beli) ? (int)$data->harga_beli : 0; // Default jika tidak diset frontend
+    $harga_beli = isset($data->harga_beli) ? (int)$data->harga_beli : 0;
     $stok_tersedia = isset($data->stok) ? (int)$data->stok : 0;
     
     $mode = isset($data->mode) ? $data->mode : 'add';

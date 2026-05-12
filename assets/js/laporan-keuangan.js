@@ -10,15 +10,12 @@ document.addEventListener("DOMContentLoaded", function () {
     return;
   }
 
-  // DOM Elements
   const timeFilter = document.getElementById("timeFilter");
   const tbody = document.getElementById("expenseTableBody");
   
-  // Data
   let transactions = getTransactions();
   let expenses = getExpenses();
 
-  // Helper to calculate date match
   function isDateMatch(dateStr, filterVal) {
     const itemDate = new Date(dateStr);
     const now = new Date();
@@ -32,13 +29,12 @@ document.addEventListener("DOMContentLoaded", function () {
     } else if (filterVal === "month") {
       return itemDate.getMonth() === now.getMonth() && itemDate.getFullYear() === now.getFullYear();
     }
-    return true; // "all"
+    return true;
   }
 
   function renderReport() {
     const filterVal = timeFilter.value;
     
-    // 1. Calculate Income (Revenue & Gross Profit)
     let filteredTxs = transactions.filter(tx => isDateMatch(tx.tanggal, filterVal));
     
     let totalPendapatan = 0;
@@ -46,14 +42,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
     filteredTxs.forEach(tx => {
       totalPendapatan += tx.total;
-      // Estimasikan Laba Kotor = 40% dari Total Pendapatan (HPP = 60%)
       totalLabaKotor += (tx.total * 0.4); 
     });
 
-    // 2. Calculate & Render Expenses
     let filteredExps = expenses.filter(ex => isDateMatch(ex.tanggal, filterVal));
     
-    // Sort expenses newest first
     filteredExps.sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal));
 
     let totalPengeluaran = 0;
@@ -83,10 +76,8 @@ document.addEventListener("DOMContentLoaded", function () {
       });
     }
 
-    // 3. Calculate Net Profit
     const labaBersih = totalLabaKotor - totalPengeluaran;
 
-    // Update Summary Cards
     document.getElementById("totPendapatan").textContent = formatRupiah(totalPendapatan);
     document.getElementById("totLabaKotor").textContent = formatRupiah(totalLabaKotor);
     document.getElementById("totPengeluaran").textContent = formatRupiah(totalPengeluaran);
@@ -94,7 +85,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const labaBersihEl = document.getElementById("totLabaBersih");
     labaBersihEl.textContent = formatRupiah(labaBersih);
     
-    // Change color based on profit/loss
     if (labaBersih < 0) {
       labaBersihEl.style.color = "var(--danger)";
     } else {
@@ -104,7 +94,6 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("expenseInfo").textContent = `Menampilkan ${filteredExps.length} catatan pengeluaran`;
   }
 
-  // --- Modal Logic ---
   const modal = document.getElementById("expenseModal");
   const form = document.getElementById("expenseForm");
 
@@ -152,9 +141,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  // Event Listeners
   timeFilter.addEventListener("change", renderReport);
 
-  // Initial Render
   renderReport();
 });
