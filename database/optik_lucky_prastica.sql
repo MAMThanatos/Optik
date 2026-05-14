@@ -45,8 +45,14 @@ CREATE TABLE `detail_transaksi` (
 CREATE TABLE `kacamata` (
   `id_kacamata` int(11) NOT NULL,
   `kode_barang` varchar(50) NOT NULL,
+  `nama_produk` varchar(255) NOT NULL,
   `merek` varchar(100) NOT NULL,
+  `ukuran_lensa` varchar(100) DEFAULT NULL,
+  `Spheris` varchar(50) DEFAULT NULL,
+  `Cylinder` varchar(50) DEFAULT NULL,
+  `Axis` varchar(50) DEFAULT NULL,
   `kategori` varchar(50) NOT NULL,
+  `deskripsi` text DEFAULT NULL,
   `harga_beli` decimal(10,2) NOT NULL,
   `harga_jual` decimal(10,2) NOT NULL,
   `stok_tersedia` int(11) NOT NULL DEFAULT 0
@@ -101,7 +107,9 @@ CREATE TABLE `transaksi` (
   `tanggal_waktu` datetime DEFAULT current_timestamp(),
   `id_pengguna` int(11) NOT NULL,
   `nama_pelanggan` varchar(100) DEFAULT NULL,
-  `total_belanja` decimal(10,2) NOT NULL
+  `total_belanja` decimal(10,2) NOT NULL,
+  `status_pesanan` enum('Diproses','Siap Diambil','Sudah Diambil') NOT NULL DEFAULT 'Diproses',
+  `uang_muka` decimal(15,2) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
