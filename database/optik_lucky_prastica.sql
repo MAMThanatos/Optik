@@ -61,6 +61,20 @@ CREATE TABLE `kacamata` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `pelanggan`
+--
+
+CREATE TABLE `pelanggan` (
+  `id_pelanggan` int(11) NOT NULL,
+  `nama_pelanggan` varchar(100) NOT NULL,
+  `no_hp` varchar(20) DEFAULT NULL,
+  `alamat` text DEFAULT NULL,
+  `tanggal_daftar` datetime DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `pengeluaran`
 --
 
@@ -106,7 +120,16 @@ CREATE TABLE `transaksi` (
   `id_transaksi` varchar(50) NOT NULL,
   `tanggal_waktu` datetime DEFAULT current_timestamp(),
   `id_pengguna` int(11) NOT NULL,
+  `id_pelanggan` int(11) DEFAULT NULL,
   `nama_pelanggan` varchar(100) DEFAULT NULL,
+  `od_spheris` varchar(20) DEFAULT NULL,
+  `od_cylinder` varchar(20) DEFAULT NULL,
+  `od_axis` varchar(20) DEFAULT NULL,
+  `os_spheris` varchar(20) DEFAULT NULL,
+  `os_cylinder` varchar(20) DEFAULT NULL,
+  `os_axis` varchar(20) DEFAULT NULL,
+  `pd` varchar(20) DEFAULT NULL,
+  `addisi` varchar(20) DEFAULT NULL,
   `total_belanja` decimal(10,2) NOT NULL,
   `status_pesanan` enum('Diproses','Siap Diambil','Sudah Diambil') NOT NULL DEFAULT 'Diproses',
   `uang_muka` decimal(15,2) NOT NULL DEFAULT 0
@@ -132,6 +155,12 @@ ALTER TABLE `kacamata`
   ADD UNIQUE KEY `kode_barang` (`kode_barang`);
 
 --
+-- Indexes for table `pelanggan`
+--
+ALTER TABLE `pelanggan`
+  ADD PRIMARY KEY (`id_pelanggan`);
+
+--
 -- Indexes for table `pengeluaran`
 --
 ALTER TABLE `pengeluaran`
@@ -150,7 +179,8 @@ ALTER TABLE `pengguna`
 --
 ALTER TABLE `transaksi`
   ADD PRIMARY KEY (`id_transaksi`),
-  ADD KEY `id_pengguna` (`id_pengguna`);
+  ADD KEY `id_pengguna` (`id_pengguna`),
+  ADD KEY `id_pelanggan` (`id_pelanggan`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -167,6 +197,12 @@ ALTER TABLE `detail_transaksi`
 --
 ALTER TABLE `kacamata`
   MODIFY `id_kacamata` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `pelanggan`
+--
+ALTER TABLE `pelanggan`
+  MODIFY `id_pelanggan` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `pengguna`
@@ -195,7 +231,8 @@ ALTER TABLE `pengeluaran`
 -- Constraints for table `transaksi`
 --
 ALTER TABLE `transaksi`
-  ADD CONSTRAINT `transaksi_ibfk_1` FOREIGN KEY (`id_pengguna`) REFERENCES `pengguna` (`id_pengguna`);
+  ADD CONSTRAINT `transaksi_ibfk_1` FOREIGN KEY (`id_pengguna`) REFERENCES `pengguna` (`id_pengguna`),
+  ADD CONSTRAINT `transaksi_ibfk_pelanggan` FOREIGN KEY (`id_pelanggan`) REFERENCES `pelanggan` (`id_pelanggan`) ON DELETE SET NULL;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
