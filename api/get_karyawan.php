@@ -13,7 +13,7 @@ if(mysqli_num_rows($result) > 0) {
             "db_id" => $row['id_pengguna'],
             "nama" => $row['nama_lengkap'],
             "role" => $row['role'],
-            "password" => $row['password']
+            "password" => ""
         );
     }
 }

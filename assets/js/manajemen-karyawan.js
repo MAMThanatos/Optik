@@ -48,7 +48,7 @@ document.addEventListener("DOMContentLoaded", function () {
         : '<span class="role-badge role-kasir">Kasir</span>';
 
       const pwd = u.password || "";
-      let maskedPassword = "•".repeat(pwd.length);
+      let maskedPassword = "••••••••";
 
       tr.innerHTML = `
         <td>${u.id}</td>
@@ -123,7 +123,8 @@ document.addEventListener("DOMContentLoaded", function () {
     inputId.value = user.id;
     inputId.readOnly = true;
     inputNama.value = user.nama;
-    inputPassword.value = user.password;
+    inputPassword.value = "";
+    inputPassword.placeholder = "Kosongkan jika tidak ingin mengubah sandi";
     
     modalTitle.textContent = "✏️ Edit Karyawan";
     modal.classList.add("show");

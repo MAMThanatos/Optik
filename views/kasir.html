@@ -122,6 +122,33 @@
             </div>
           </div>
 
+          <!-- Rekam Medis & Pelanggan -->
+          <div class="cart-customer" style="margin-top: 15px; padding: 15px; border: 1px solid #e2e8f0; border-radius: 8px; background: #f8fafc; margin-bottom: 15px;">
+            <h4 style="margin-top:0; margin-bottom:10px; font-size: 14px; color: #2d3748; display:flex; align-items:center; gap:5px;"><span>👤</span> Data Pelanggan & Resep</h4>
+            <div style="margin-bottom: 10px;">
+               <input type="text" id="custName" placeholder="Nama Pelanggan" style="width:100%; padding: 8px; border: 1px solid #cbd5e0; border-radius: 4px;" />
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 5px; margin-bottom: 5px;">
+              <small style="color:#718096; grid-column: 1/-1; font-weight:600;">Kanan (OD)</small>
+              <input type="text" id="od_sph" placeholder="SPH" style="padding: 6px; border: 1px solid #cbd5e0; border-radius: 4px; font-size:12px;" />
+              <input type="text" id="od_cyl" placeholder="CYL" style="padding: 6px; border: 1px solid #cbd5e0; border-radius: 4px; font-size:12px;" />
+              <input type="text" id="od_axis" placeholder="AXIS" style="padding: 6px; border: 1px solid #cbd5e0; border-radius: 4px; font-size:12px;" />
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 5px; margin-bottom: 10px;">
+              <small style="color:#718096; grid-column: 1/-1; font-weight:600;">Kiri (OS)</small>
+              <input type="text" id="os_sph" placeholder="SPH" style="padding: 6px; border: 1px solid #cbd5e0; border-radius: 4px; font-size:12px;" />
+              <input type="text" id="os_cyl" placeholder="CYL" style="padding: 6px; border: 1px solid #cbd5e0; border-radius: 4px; font-size:12px;" />
+              <input type="text" id="os_axis" placeholder="AXIS" style="padding: 6px; border: 1px solid #cbd5e0; border-radius: 4px; font-size:12px;" />
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 5px;">
+              <input type="text" id="resep_pd" placeholder="PD" style="padding: 6px; border: 1px solid #cbd5e0; border-radius: 4px; font-size:12px;" />
+              <input type="text" id="resep_add" placeholder="ADD" style="padding: 6px; border: 1px solid #cbd5e0; border-radius: 4px; font-size:12px;" />
+            </div>
+          </div>
+
           <!-- Discount -->
           <div class="cart-discount">
             <label>Diskon (%)</label>
@@ -162,6 +189,24 @@
             <div class="payment-summary">
               <div class="payment-total-label">Total yang harus dibayar</div>
               <div class="payment-total-value" id="paymentTotal">Rp 0</div>
+            </div>
+
+            <!-- DP / Lunas Selection -->
+            <div class="payment-type-section" style="margin: 15px 0; padding: 15px; background: #e2e8f0; border-radius: 8px;">
+              <h4 style="margin-top:0; margin-bottom:10px;">Status Pembayaran</h4>
+              <div style="display: flex; gap: 15px;">
+                <label style="cursor:pointer;"><input type="radio" name="payStatus" value="lunas" checked> Lunas</label>
+                <label style="cursor:pointer;"><input type="radio" name="payStatus" value="dp"> Uang Muka (DP)</label>
+              </div>
+              
+              <div id="dpInputSection" style="display:none; margin-top:10px;">
+                <label style="display:block; margin-bottom:5px; font-size:13px;">Nominal DP</label>
+                <input type="number" id="dpAmount" placeholder="Masukkan nominal DP..." style="width:100%; padding:10px; border:1px solid #cbd5e0; border-radius:6px; font-size:16px;" />
+              </div>
+              
+              <div id="sisaTagihanRow" style="display:none; margin-top:10px; font-weight:bold; color:#e53e3e; justify-content: space-between;">
+                <span>Sisa Tagihan:</span> <span id="sisaTagihanAmount">Rp 0</span>
+              </div>
             </div>
 
             <div class="payment-methods">

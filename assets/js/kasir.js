@@ -352,6 +352,34 @@ function setupPaymentModal() {
     cashInput.addEventListener("input", handleCashInput);
   }
 
+  const payStatusRadios = document.querySelectorAll('input[name="payStatus"]');
+  const dpAmountInput = document.getElementById("dpAmount");
+
+  payStatusRadios.forEach(radio => {
+    radio.addEventListener("change", function() {
+      const dpSection = document.getElementById("dpInputSection");
+      const sisaTagihanRow = document.getElementById("sisaTagihanRow");
+      if (this.value === "dp") {
+        dpSection.style.display = "block";
+        sisaTagihanRow.style.display = "flex";
+      } else {
+        dpSection.style.display = "none";
+        sisaTagihanRow.style.display = "none";
+      }
+      handleCashInput();
+      updateSisaTagihan();
+      validatePayment();
+    });
+  });
+
+  if (dpAmountInput) {
+    dpAmountInput.addEventListener("input", function() {
+      updateSisaTagihan();
+      handleCashInput();
+      validatePayment();
+    });
+  }
+
   const bankBtns = document.querySelectorAll(".bank-btn");
   bankBtns.forEach((btn) => {
     btn.addEventListener("click", function () {
@@ -376,6 +404,18 @@ function setupPaymentModal() {
       selectedPaymentMethod = null;
       selectedBank = null;
       document.getElementById("discountInput").value = 0;
+      
+      // Reset resep & pelanggan
+      const inputsToReset = ["custName", "od_sph", "od_cyl", "od_axis", "os_sph", "os_cyl", "os_axis", "resep_pd", "resep_add", "dpAmount", "cashInput"];
+      inputsToReset.forEach(id => {
+         if(document.getElementById(id)) document.getElementById(id).value = "";
+      });
+      const lunasRadio = document.querySelector('input[name="payStatus"][value="lunas"]');
+      if (lunasRadio) {
+          lunasRadio.checked = true;
+          document.getElementById("dpInputSection").style.display = "none";
+          document.getElementById("sisaTagihanRow").style.display = "none";
+      }
       renderCart();
       updateTotals();
       if (receiptModal) receiptModal.classList.remove("show");
@@ -475,17 +515,34 @@ function hideAllPaymentSections() {
 /**
  * Handle cash input
  */
+function updateSisaTagihan() {
+  const grandTotal = getGrandTotal();
+  const dpAmount = parseInt(document.getElementById("dpAmount").value) || 0;
+  const sisa = grandTotal - dpAmount;
+  const sisaEl = document.getElementById("sisaTagihanAmount");
+  if (sisaEl) {
+    sisaEl.textContent = formatRupiah(sisa > 0 ? sisa : 0);
+  }
+}
+
+/**
+ * Handle cash input
+ */
 function handleCashInput() {
   const cashInput = document.getElementById("cashInput");
   const kembalianRow = document.getElementById("kembalianRow");
   const kembalianAmount = document.getElementById("kembalianAmount");
 
   const cashValue = parseInt(cashInput.value) || 0;
+  
+  const payStatusEl = document.querySelector('input[name="payStatus"]:checked');
+  const payStatus = payStatusEl ? payStatusEl.value : "lunas";
   const grandTotal = getGrandTotal();
+  const requiredAmount = payStatus === "dp" ? (parseInt(document.getElementById("dpAmount").value) || 0) : grandTotal;
 
   if (cashValue > 0) {
     kembalianRow.style.display = "flex";
-    const kembalian = cashValue - grandTotal;
+    const kembalian = cashValue - requiredAmount;
 
     if (kembalian >= 0) {
       kembalianAmount.textContent = formatRupiah(kembalian);
@@ -520,10 +577,22 @@ function validatePayment() {
   if (!btnConfirm) return;
 
   let valid = false;
+  const payStatusEl = document.querySelector('input[name="payStatus"]:checked');
+  const payStatus = payStatusEl ? payStatusEl.value : "lunas";
+  const grandTotal = getGrandTotal();
+  let requiredAmount = grandTotal;
+
+  if (payStatus === "dp") {
+    requiredAmount = parseInt(document.getElementById("dpAmount").value) || 0;
+    if (requiredAmount <= 0 || requiredAmount >= grandTotal) {
+       btnConfirm.disabled = true;
+       return;
+    }
+  }
 
   if (selectedPaymentMethod === "tunai") {
     const cashValue = parseInt(document.getElementById("cashInput").value) || 0;
-    valid = cashValue >= getGrandTotal();
+    valid = cashValue >= requiredAmount;
   } else if (selectedPaymentMethod === "transfer") {
     valid = selectedBank !== null;
   } else if (selectedPaymentMethod === "qris" || selectedPaymentMethod === "kartu") {
@@ -560,11 +629,27 @@ function confirmPayment() {
     (m) => m.id === selectedPaymentMethod
   );
   const methodName = methodInfo ? methodInfo.nama : "-";
+  
+  const payStatusEl = document.querySelector('input[name="payStatus"]:checked');
+  const payStatus = payStatusEl ? payStatusEl.value : "lunas";
+  const requiredAmount = payStatus === "dp" ? (parseInt(document.getElementById("dpAmount").value) || 0) : grandTotal;
+  const sisaTagihan = payStatus === "dp" ? grandTotal - requiredAmount : 0;
+
   const cashValue =
     selectedPaymentMethod === "tunai"
       ? parseInt(document.getElementById("cashInput").value) || 0
-      : 0;
-  const kembalian = selectedPaymentMethod === "tunai" ? cashValue - grandTotal : 0;
+      : requiredAmount;
+  const kembalian = selectedPaymentMethod === "tunai" ? cashValue - requiredAmount : 0;
+
+  const custName = document.getElementById("custName") ? document.getElementById("custName").value : "-";
+  const od_sph = document.getElementById("od_sph")?.value || "";
+  const od_cyl = document.getElementById("od_cyl")?.value || "";
+  const od_axis = document.getElementById("od_axis")?.value || "";
+  const os_sph = document.getElementById("os_sph")?.value || "";
+  const os_cyl = document.getElementById("os_cyl")?.value || "";
+  const os_axis = document.getElementById("os_axis")?.value || "";
+  const pd = document.getElementById("resep_pd")?.value || "";
+  const addisi = document.getElementById("resep_add")?.value || "";
 
   cart.forEach(item => {
     let p = currentProducts.find(prod => prod.id === item.id);
@@ -587,6 +672,13 @@ function confirmPayment() {
     kasirId: session ? session.id : "-",
     kasirNama: session ? session.nama : "-",
     cabang: session ? session.cabang : "-",
+    pelanggan: custName,
+    od_sph, od_cyl, od_axis,
+    os_sph, os_cyl, os_axis,
+    pd, addisi,
+    statusPesanan: payStatus === "dp" ? "Diproses" : "Selesai",
+    uangMuka: payStatus === "dp" ? requiredAmount : grandTotal,
+    sisaTagihan: sisaTagihan,
     items: cart.map(item => ({...item})),
     subtotal: subtotal,
     diskonPersen: discountPercent,
@@ -618,7 +710,7 @@ function confirmPayment() {
         <div><span>No. Invoice</span><span>${invoiceNo}</span></div>
         <div><span>Tanggal</span><span>${dateStr} ${timeStr}</span></div>
         <div><span>Kasir</span><span>${session ? session.nama : "-"}</span></div>
-        <div><span>Cabang</span><span>${session ? session.cabang : "-"}</span></div>
+        <div><span>Pelanggan</span><span>${custName}</span></div>
       </div>
 
       <div class="receipt-items-list">
@@ -647,13 +739,12 @@ function confirmPayment() {
               )}</span></div>`
             : ""
         }
-        <div class="grand-total-row"><span>Total</span><span>${formatRupiah(
-          grandTotal
-        )}</span></div>
+        <div class="grand-total-row"><span>Total Tagihan</span><span>${formatRupiah(grandTotal)}</span></div>
+        ${payStatus === "dp" ? 
+          `<div><span>Uang Muka (DP)</span><span>${formatRupiah(requiredAmount)}</span></div>
+           <div style="color:red; font-weight:bold; display:flex; justify-content:space-between; margin-top:5px;"><span>Sisa Tagihan</span><span>${formatRupiah(sisaTagihan)}</span></div>` : ""}
         <div style="margin-top: 10px; padding-top: 10px; border-top: 1px dashed #ddd;"></div>
-        <div><span>Dibayar (${
-          selectedPaymentMethod.toUpperCase()
-        })</span><span>${formatRupiah(cashValue)}</span></div>
+        <div><span>Dibayar (${selectedPaymentMethod.toUpperCase()})</span><span>${formatRupiah(cashValue)}</span></div>
         <div><span>Kembali</span><span>${formatRupiah(kembalian)}</span></div>
       </div>
 
