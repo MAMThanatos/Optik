@@ -42,7 +42,20 @@ document.addEventListener("DOMContentLoaded", function () {
 
     filteredTxs.forEach(tx => {
       totalPendapatan += tx.total;
-      totalLabaKotor += (tx.total * 0.4); 
+      
+      // Hitung HPP (Harga Pokok Penjualan)
+      let hpp = 0;
+      if (tx.items && tx.items.length > 0) {
+        tx.items.forEach(item => {
+          // Jika ada harga_beli di history, pakai itu. Jika tidak, gunakan margin 40% (HPP 60%) sebagai fallback untuk data lama.
+          let hb = item.harga_beli !== undefined ? item.harga_beli : (item.harga * 0.6);
+          hpp += (hb * item.qty);
+        });
+      } else {
+        hpp = tx.total * 0.6;
+      }
+      
+      totalLabaKotor += (tx.total - hpp); 
     });
 
     let filteredExps = expenses.filter(ex => isDateMatch(ex.tanggal, filterVal));

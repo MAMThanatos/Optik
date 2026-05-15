@@ -189,6 +189,7 @@ function addToCart(productId) {
       id: product.id,
       nama: product.nama,
       harga: product.harga,
+      harga_beli: product.harga_beli,
       qty: 1,
       maxStok: product.stok,
     });
@@ -690,6 +691,23 @@ function confirmPayment() {
     kembalian: kembalian
   };
 
+  // 1. Simpan ke Database MySQL (Backend)
+  fetch("../api/simpan_transaksi.php", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(transaction)
+  })
+  .then(res => res.json())
+  .then(data => {
+      if(data.status !== "success") {
+         console.error("Gagal menyimpan ke database:", data.message);
+      } else {
+         console.log("Sukses tersimpan di database:", data.message);
+      }
+  })
+  .catch(err => console.error("Error API Simpan Transaksi:", err));
+
+  // 2. Simpan ke LocalStorage (Untuk backup sementara agar dashboard/laporan lama tidak error)
   const txs = getTransactions();
   txs.push(transaction);
   saveTransactions(txs);
