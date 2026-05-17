@@ -57,9 +57,9 @@ if($pelanggan !== "-" && $pelanggan !== "") {
 
 // 3. Simpan Transaksi Induk
 $qTx = "INSERT INTO transaksi (
-    id_transaksi, tanggal_transaksi, id_pengguna, id_pelanggan, nama_pelanggan,
+    id_transaksi, tanggal_waktu, id_pengguna, id_pelanggan, nama_pelanggan,
     od_spheris, od_cylinder, od_axis, os_spheris, os_cylinder, os_axis, pd, addisi,
-    subtotal, diskon, total_akhir, metode_pembayaran, uang_diterima, kembalian,
+    subtotal, diskon, total_belanja, metode_pembayaran, uang_diterima, kembalian,
     status_pesanan, uang_muka
 ) VALUES (
     '$id_transaksi', '$tanggal', $id_pengguna, $id_pelanggan, '$pelanggan',

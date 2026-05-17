@@ -13,8 +13,24 @@ document.addEventListener("DOMContentLoaded", function () {
   const timeFilter = document.getElementById("timeFilter");
   const searchInput = document.getElementById("searchTx");
   const tbody = document.getElementById("salesTableBody");
-  
-  let transactions = getTransactions();
+  let transactions = [];
+
+  async function loadTransactions() {
+    try {
+      const response = await fetch("../api/get_transaksi.php");
+      const result = await response.json();
+      if (result.status === "success") {
+        transactions = result.data;
+      } else {
+        console.error("Gagal memuat transaksi:", result.message);
+        transactions = getTransactions(); // Fallback
+      }
+    } catch (e) {
+      console.error("Kesalahan jaringan:", e);
+      transactions = getTransactions(); // Fallback
+    }
+    renderReport();
+  }
 
   function renderReport() {
     const filterVal = timeFilter.value;
@@ -93,5 +109,5 @@ document.addEventListener("DOMContentLoaded", function () {
   timeFilter.addEventListener("change", renderReport);
   searchInput.addEventListener("input", renderReport);
 
-  renderReport();
+  loadTransactions();
 });

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 26, 2026 at 04:36 AM
+-- Generation Time: May 17, 2026 at 11:21 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -106,9 +106,9 @@ CREATE TABLE `pengguna` (
 --
 
 INSERT INTO `pengguna` (`id_pengguna`, `nama_lengkap`, `username`, `password`, `role`) VALUES
-(1, 'Manager Lucky', 'manager', 'manager123', 'manager'),
-(2, 'Kasir Satu', 'kasir1', 'kasir123', 'karyawan'),
-(3, 'Kasir Dua', 'kasir2', 'kasir123', 'karyawan');
+(1, 'Manager Lucky', 'manager', '$2y$10$QJ44JZyfkxyd75MRGTstl.QnmtqkJxwfflqb5Q/uGTaEjl7kBZtz6', 'manager'),
+(2, 'Kasir Satu', 'kasir1', '$2y$10$r4C.1MCq/vem7F942TDtdOxqzFCXlfaZkuhFpCEXheEBa9nEAFd52', 'karyawan'),
+(3, 'Kasir Dua', 'kasir2', '$2y$10$3krx0/NycfUm1TYVFndAzupN/3trzpIrv8ZO6PLEDpFln33dOCD.G', 'karyawan');
 
 -- --------------------------------------------------------
 
@@ -132,7 +132,12 @@ CREATE TABLE `transaksi` (
   `addisi` varchar(20) DEFAULT NULL,
   `total_belanja` decimal(10,2) NOT NULL,
   `status_pesanan` enum('Diproses','Siap Diambil','Sudah Diambil') NOT NULL DEFAULT 'Diproses',
-  `uang_muka` decimal(15,2) NOT NULL DEFAULT 0
+  `uang_muka` decimal(15,2) NOT NULL DEFAULT 0.00,
+  `subtotal` decimal(15,2) NOT NULL DEFAULT 0.00,
+  `diskon` decimal(15,2) NOT NULL DEFAULT 0.00,
+  `metode_pembayaran` varchar(100) DEFAULT '-',
+  `uang_diterima` decimal(15,2) NOT NULL DEFAULT 0.00,
+  `kembalian` decimal(15,2) NOT NULL DEFAULT 0.00
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -180,7 +185,7 @@ ALTER TABLE `pengguna`
 ALTER TABLE `transaksi`
   ADD PRIMARY KEY (`id_transaksi`),
   ADD KEY `id_pengguna` (`id_pengguna`),
-  ADD KEY `id_pelanggan` (`id_pelanggan`);
+  ADD KEY `transaksi_ibfk_pelanggan` (`id_pelanggan`);
 
 --
 -- AUTO_INCREMENT for dumped tables

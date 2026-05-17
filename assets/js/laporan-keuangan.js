@@ -12,9 +12,26 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const timeFilter = document.getElementById("timeFilter");
   const tbody = document.getElementById("expenseTableBody");
-  
-  let transactions = getTransactions();
+  let transactions = [];
   let expenses = getExpenses();
+
+  async function loadData() {
+    try {
+      const response = await fetch("../api/get_transaksi.php");
+      const result = await response.json();
+      if (result.status === "success") {
+        transactions = result.data;
+      } else {
+        transactions = getTransactions(); // Fallback
+      }
+    } catch (e) {
+      console.error("Kesalahan jaringan:", e);
+      transactions = getTransactions(); // Fallback
+    }
+    
+    // Nanti bisa tambahkan fetch pengeluaran di sini
+    renderReport();
+  }
 
   function isDateMatch(dateStr, filterVal) {
     const itemDate = new Date(dateStr);
@@ -156,5 +173,5 @@ document.addEventListener("DOMContentLoaded", function () {
 
   timeFilter.addEventListener("change", renderReport);
 
-  renderReport();
+  loadData();
 });
