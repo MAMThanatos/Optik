@@ -111,7 +111,11 @@ function initDashboard(expectedRole) {
 
   updateDate();
 
-  animateStats();
+  if (window.location.pathname.includes("dashboard")) {
+    fetchDashboardData(session);
+  } else {
+    animateStats();
+  }
 
   const managerMenus = document.querySelectorAll(".js-manager-menus");
   const managerOnlyNavs = document.querySelectorAll(".js-manager-only");
@@ -230,4 +234,78 @@ function showError(el, message) {
   setTimeout(() => {
     el.classList.remove("show");
   }, 4000);
+}
+
+/**
+ * Fetch dashboard data from API
+ */
+async function fetchDashboardData(session) {
+  try {
+    const response = await fetch("../api/get_dashboard_stats.php");
+    const result = await response.json();
+    if (result.status === "success") {
+      const data = result.data;
+      
+      // Update stat cards data-target attributes
+      const cards = [
+        { label: "Penjualan Hari Ini", target: data.penjualan_hari_ini },
+        { label: "Transaksi Hari Ini", target: data.transaksi_hari_ini },
+        { label: "Stok Kacamata", target: data.stok_kacamata },
+        { label: "Karyawan Aktif", target: data.karyawan_aktif },
+        { label: "Stok Menipis", target: data.stok_menipis },
+        { label: "Total Stok", target: data.stok_kacamata } // for kasir
+      ];
+
+      const statLabels = document.querySelectorAll(".stat-label");
+      statLabels.forEach(labelEl => {
+        const text = labelEl.textContent.trim();
+        const cardMatch = cards.find(c => c.label === text);
+        if (cardMatch) {
+          const valueEl = labelEl.parentElement.querySelector(".stat-value");
+          if (valueEl) {
+            valueEl.setAttribute("data-target", cardMatch.target);
+          }
+        }
+      });
+
+      // Update recent transactions table
+      const tbody = document.getElementById("recentTransactionsTable");
+      if (tbody) {
+        if (data.transaksi_terbaru.length === 0) {
+          const colSpan = session.role === "manager" ? 6 : 5;
+          tbody.innerHTML = `<tr><td colspan="${colSpan}" style="text-align: center; padding: 20px; color: #718096;">Belum ada transaksi</td></tr>`;
+        } else {
+          tbody.innerHTML = data.transaksi_terbaru.map(tx => {
+            if (session.role === "manager") {
+              return `
+                <tr>
+                  <td style="font-family:monospace;font-weight:600;">${tx.id}</td>
+                  <td>${tx.pelanggan || "-"}</td>
+                  <td>${tx.produk_contoh || "-"}</td>
+                  <td style="font-weight:600;">${formatRupiah(parseFloat(tx.total))}</td>
+                  <td>${tx.kasirNama}</td>
+                  <td><span class="status-badge ${tx.status === 'Selesai' ? 'success' : 'warning'}">${tx.status}</span></td>
+                </tr>
+              `;
+            } else {
+              return `
+                <tr>
+                  <td style="font-family:monospace;font-weight:600;">${tx.id}</td>
+                  <td>${tx.pelanggan || "-"}</td>
+                  <td>${tx.produk_contoh || "-"}</td>
+                  <td style="font-weight:600;">${formatRupiah(parseFloat(tx.total))}</td>
+                  <td><span class="status-badge ${tx.status === 'Selesai' ? 'success' : 'warning'}">${tx.status}</span></td>
+                </tr>
+              `;
+            }
+          }).join("");
+        }
+      }
+
+      animateStats();
+    }
+  } catch (error) {
+    console.error("Gagal memuat dashboard:", error);
+    animateStats();
+  }
 }

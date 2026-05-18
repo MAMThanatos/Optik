@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const timeFilter = document.getElementById("timeFilter");
   const tbody = document.getElementById("expenseTableBody");
   let transactions = [];
-  let expenses = getExpenses();
+  let expenses = [];
 
   async function loadData() {
     try {
@@ -29,7 +29,19 @@ document.addEventListener("DOMContentLoaded", function () {
       transactions = getTransactions(); // Fallback
     }
     
-    // Nanti bisa tambahkan fetch pengeluaran di sini
+    try {
+      const expResponse = await fetch("../api/get_pengeluaran.php");
+      const expResult = await expResponse.json();
+      if (expResult.status === "success") {
+        expenses = expResult.data;
+      } else {
+        expenses = getExpenses();
+      }
+    } catch(e) {
+      console.error("Gagal load pengeluaran", e);
+      expenses = getExpenses();
+    }
+
     renderReport();
   }
 
@@ -139,12 +151,16 @@ document.addEventListener("DOMContentLoaded", function () {
     closeModal();
   });
 
-  document.getElementById("btnSaveExpense").addEventListener("click", (e) => {
+  document.getElementById("btnSaveExpense").addEventListener("click", async (e) => {
     e.preventDefault();
     if (!form.checkValidity()) {
       form.reportValidity();
       return;
     }
+
+    const btn = document.getElementById("btnSaveExpense");
+    btn.disabled = true;
+    btn.textContent = "Menyimpan...";
 
     const newExpense = {
       id: "EXP-" + Date.now(),
@@ -156,18 +172,52 @@ document.addEventListener("DOMContentLoaded", function () {
       kasirNama: session.nama
     };
 
-    expenses.push(newExpense);
-    saveExpenses(expenses);
-    
-    closeModal();
-    renderReport();
+    try {
+      const response = await fetch("../api/simpan_pengeluaran.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newExpense)
+      });
+      const result = await response.json();
+      if (result.status === "success") {
+        closeModal();
+        loadData(); // reload all data
+      } else {
+        alert(result.message);
+      }
+    } catch (err) {
+      console.error(err);
+      // Fallback lokal
+      expenses.push(newExpense);
+      saveExpenses(expenses);
+      closeModal();
+      renderReport();
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "Simpan";
+    }
   });
 
-  window.deleteExpense = function(id) {
+  window.deleteExpense = async function(id) {
     if(confirm("Hapus catatan pengeluaran ini?")) {
-      expenses = expenses.filter(e => e.id !== id);
-      saveExpenses(expenses);
-      renderReport();
+      try {
+        const response = await fetch("../api/hapus_pengeluaran.php", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id: id })
+        });
+        const result = await response.json();
+        if (result.status === "success") {
+          loadData();
+        } else {
+          alert(result.message);
+        }
+      } catch (err) {
+        console.error(err);
+        expenses = expenses.filter(e => e.id !== id);
+        saveExpenses(expenses);
+        renderReport();
+      }
     }
   }
 
