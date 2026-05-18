@@ -3,6 +3,9 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 function initApp() {
+  // Sync pengaturan dari server agar struk kasir selalu update
+  syncStoreProfile();
+
   const path = window.location.pathname;
 
   if (path.includes("login.html")) {
@@ -234,6 +237,21 @@ function showError(el, message) {
   setTimeout(() => {
     el.classList.remove("show");
   }, 4000);
+}
+
+/**
+ * Sinkronisasi Profil Toko dari Database
+ */
+async function syncStoreProfile() {
+  try {
+    const response = await fetch("../api/get_pengaturan.php");
+    const result = await response.json();
+    if (result.status === "success" && result.data) {
+      saveStoreProfile(result.data);
+    }
+  } catch (error) {
+    console.error("Gagal sinkronisasi profil toko:", error);
+  }
 }
 
 /**

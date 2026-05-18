@@ -89,6 +89,29 @@ CREATE TABLE `pengeluaran` (
 
 -- --------------------------------------------------------
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `pengaturan`
+--
+
+CREATE TABLE `pengaturan` (
+  `id_pengaturan` int(11) NOT NULL,
+  `nama_toko` varchar(100) NOT NULL,
+  `alamat` text DEFAULT NULL,
+  `telepon` varchar(20) DEFAULT NULL,
+  `pesan_struk` text DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `pengaturan`
+--
+
+INSERT INTO `pengaturan` (`id_pengaturan`, `nama_toko`, `alamat`, `telepon`, `pesan_struk`) VALUES
+(1, 'OPTIK LUCKY PRASTICA', 'Jl. Merdeka No. 123, Jakarta', '(021) 1234-5678', 'Terima kasih atas kunjungan Anda.\nBarang yang sudah dibeli tidak dapat dikembalikan.\nGaransi frame 1 tahun.');
+
+-- --------------------------------------------------------
+
 --
 -- Table structure for table `pengguna`
 --
@@ -173,6 +196,12 @@ ALTER TABLE `pengeluaran`
   ADD KEY `id_pengguna` (`id_pengguna`);
 
 --
+-- Indexes for table `pengaturan`
+--
+ALTER TABLE `pengaturan`
+  ADD PRIMARY KEY (`id_pengaturan`);
+
+--
 -- Indexes for table `pengguna`
 --
 ALTER TABLE `pengguna`
@@ -208,6 +237,12 @@ ALTER TABLE `kacamata`
 --
 ALTER TABLE `pelanggan`
   MODIFY `id_pelanggan` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `pengaturan`
+--
+ALTER TABLE `pengaturan`
+  MODIFY `id_pengaturan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `pengguna`
