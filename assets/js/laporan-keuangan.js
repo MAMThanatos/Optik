@@ -22,11 +22,11 @@ document.addEventListener("DOMContentLoaded", function () {
       if (result.status === "success") {
         transactions = result.data;
       } else {
-        transactions = getTransactions(); // Fallback
+        alert("Gagal memuat transaksi dari server.");
       }
     } catch (e) {
       console.error("Kesalahan jaringan:", e);
-      transactions = getTransactions(); // Fallback
+      alert("Terjadi kesalahan jaringan saat memuat transaksi.");
     }
     
     try {
@@ -35,11 +35,11 @@ document.addEventListener("DOMContentLoaded", function () {
       if (expResult.status === "success") {
         expenses = expResult.data;
       } else {
-        expenses = getExpenses();
+        alert("Gagal memuat pengeluaran dari server.");
       }
     } catch(e) {
       console.error("Gagal load pengeluaran", e);
-      expenses = getExpenses();
+      alert("Terjadi kesalahan jaringan saat memuat pengeluaran.");
     }
 
     renderReport();
@@ -187,11 +187,7 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     } catch (err) {
       console.error(err);
-      // Fallback lokal
-      expenses.push(newExpense);
-      saveExpenses(expenses);
-      closeModal();
-      renderReport();
+      alert("Terjadi kesalahan koneksi saat menyimpan pengeluaran.");
     } finally {
       btn.disabled = false;
       btn.textContent = "Simpan";
@@ -214,9 +210,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
       } catch (err) {
         console.error(err);
-        expenses = expenses.filter(e => e.id !== id);
-        saveExpenses(expenses);
-        renderReport();
+        alert("Terjadi kesalahan saat menghapus pengeluaran.");
       }
     }
   }

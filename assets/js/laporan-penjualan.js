@@ -23,11 +23,11 @@ document.addEventListener("DOMContentLoaded", function () {
         transactions = result.data;
       } else {
         console.error("Gagal memuat transaksi:", result.message);
-        transactions = getTransactions(); // Fallback
+        alert("Gagal memuat transaksi dari server.");
       }
     } catch (e) {
       console.error("Kesalahan jaringan:", e);
-      transactions = getTransactions(); // Fallback
+      alert("Terjadi kesalahan jaringan saat memuat transaksi.");
     }
     renderReport();
   }

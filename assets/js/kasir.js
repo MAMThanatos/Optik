@@ -656,14 +656,6 @@ function confirmPayment() {
     let p = currentProducts.find(prod => prod.id === item.id);
     if(p) {
       p.stok -= item.qty;
-      fetch("../api/simpan_barang.php", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-           ...p,
-           mode: "edit"
-        })
-      }).catch(e => console.error("Gagal update stok:", e));
     }
   });
 
@@ -707,10 +699,7 @@ function confirmPayment() {
   })
   .catch(err => console.error("Error API Simpan Transaksi:", err));
 
-  // 2. Simpan ke LocalStorage (Untuk backup sementara agar dashboard/laporan lama tidak error)
-  const txs = getTransactions();
-  txs.push(transaction);
-  saveTransactions(txs);
+
 
   const profile = getStoreProfile();
   const footerMessage = profile.pesan_struk.replace(/\n/g, '<br>');
