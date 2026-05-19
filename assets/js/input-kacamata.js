@@ -2,7 +2,8 @@ let productList = [];
 let editingProductId = null;
 let deletingProductId = null;
 
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", async function () {
+  await fetchSession();
   initInputKacamataPage();
 });
 

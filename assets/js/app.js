@@ -1,4 +1,5 @@
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", async function () {
+  await fetchSession();
   initApp();
 });
 
@@ -179,8 +180,8 @@ function setActiveNav() {
 function setupLogout() {
   const logoutBtn = document.getElementById("btnLogout");
   if (logoutBtn) {
-    logoutBtn.addEventListener("click", function () {
-      clearSession();
+    logoutBtn.addEventListener("click", async function () {
+      await clearSession();
       window.location.href = "login.html";
     });
   }

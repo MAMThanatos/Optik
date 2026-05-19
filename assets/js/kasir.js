@@ -7,7 +7,8 @@ let selectedPaymentMethod = null;
 let selectedBank = null;
 let currentProducts = [];
 
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", async function () {
+  await fetchSession();
   initKasirPage();
 });
 

@@ -21,26 +21,47 @@ const PAYMENT_METHODS = [
 
 
 
+let RUNTIME_SESSION = null;
+
 /**
- * Simpan session user ke localStorage
+ * Ambil session user dari server
  */
-function setSession(user) {
-  localStorage.setItem("pos_session", JSON.stringify(user));
+async function fetchSession() {
+  try {
+    const response = await fetch("../api/me.php");
+    const result = await response.json();
+    if (result.status === "success") {
+      RUNTIME_SESSION = result.data;
+    } else {
+      RUNTIME_SESSION = null;
+    }
+  } catch (e) {
+    RUNTIME_SESSION = null;
+  }
 }
 
 /**
- * Ambil session user dari localStorage
+ * Simpan session user ke runtime
+ */
+function setSession(user) {
+  RUNTIME_SESSION = user;
+}
+
+/**
+ * Ambil session user dari runtime (sync)
  */
 function getSession() {
-  const session = localStorage.getItem("pos_session");
-  return session ? JSON.parse(session) : null;
+  return RUNTIME_SESSION;
 }
 
 /**
  * Hapus session (logout)
  */
-function clearSession() {
-  localStorage.removeItem("pos_session");
+async function clearSession() {
+  RUNTIME_SESSION = null;
+  try {
+    await fetch("../api/logout.php");
+  } catch(e) {}
 }
 
 /**

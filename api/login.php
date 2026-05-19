@@ -1,4 +1,5 @@
 <?php
+session_start();
 header("Content-Type: application/json; charset=UTF-8");
 include_once '../config/koneksi.php';
 
@@ -15,6 +16,12 @@ if(isset($data->username) && isset($data->password)) {
         $row = mysqli_fetch_assoc($result);
         
         if(password_verify($password_input, $row['password'])) {
+            // Set session
+            $_SESSION['user_id'] = $row['id_pengguna'];
+            $_SESSION['role'] = $row['role'];
+            $_SESSION['nama'] = $row['nama_lengkap'];
+            $_SESSION['username'] = $row['username'];
+
             echo json_encode(array(
                 "status" => "success",
                 "message" => "Login berhasil",

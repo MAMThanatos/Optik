@@ -1,4 +1,5 @@
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", async function () {
+  await fetchSession();
   const session = getSession();
   if (!session) {
     window.location.href = "login.html";
