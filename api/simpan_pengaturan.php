@@ -1,4 +1,10 @@
 <?php
+session_start();
+if (!isset($_SESSION['user_id'])) {
+    header("Content-Type: application/json; charset=UTF-8");
+    echo json_encode(["status" => "error", "message" => "Unauthorized access."]);
+    exit;
+}
 header("Content-Type: application/json; charset=UTF-8");
 include_once '../config/koneksi.php';
 
