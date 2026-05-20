@@ -254,7 +254,7 @@ function setupFormEvents() {
 
   if (btnRemoveEditGambar) {
     btnRemoveEditGambar.addEventListener("click", function () {
-      selectedEditGambarBase64 = "";
+      selectedEditGambarBase64 = "REMOVE";
       if (editGambar) editGambar.value = "";
       if (editGambarPreview) editGambarPreview.src = "";
       if (editGambarPreviewContainer) editGambarPreviewContainer.style.display = "none";

@@ -65,7 +65,20 @@ if(isset($data->id) && isset($data->nama) && isset($data->kategori)) {
         }
     } else if($mode === 'edit') {
         $updateGambarSql = "";
-        if ($gambarPath !== null) {
+        if (isset($data->gambar) && $data->gambar === "REMOVE") {
+            // Hapus gambar lama jika ada
+            $oldRes = mysqli_query($conn, "SELECT gambar FROM kacamata WHERE kode_barang = '$kode_barang'");
+            if ($oldRes && mysqli_num_rows($oldRes) > 0) {
+                $oldRow = mysqli_fetch_assoc($oldRes);
+                if (!empty($oldRow['gambar'])) {
+                    $oldFilePath = "../" . $oldRow['gambar'];
+                    if (file_exists($oldFilePath)) {
+                        unlink($oldFilePath);
+                    }
+                }
+            }
+            $updateGambarSql = ", gambar = NULL";
+        } else if ($gambarPath !== null) {
             // Hapus gambar lama jika ada
             $oldRes = mysqli_query($conn, "SELECT gambar FROM kacamata WHERE kode_barang = '$kode_barang'");
             if ($oldRes && mysqli_num_rows($oldRes) > 0) {
