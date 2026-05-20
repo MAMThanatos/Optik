@@ -77,7 +77,14 @@ document.addEventListener("DOMContentLoaded", async function () {
 
       tr.innerHTML = `
         <td>${p.id}</td>
-        <td style="font-weight: 500;">${p.nama}</td>
+        <td>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            ${p.gambar 
+              ? `<img src="../${p.gambar}" style="width: 40px; height: 40px; object-fit: cover; border-radius: 6px; border: 1px solid var(--border);" />` 
+              : `<div style="width: 40px; height: 40px; background: #edf2f7; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 20px; border: 1px solid var(--border);">👓</div>`}
+            <span style="font-weight: 500;">${p.nama}</span>
+          </div>
+        </td>
         <td>${p.kategori}</td>
         <td>${p.merek}</td>
         <td>${formatRupiah(p.harga)}</td>

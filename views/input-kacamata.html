@@ -179,6 +179,17 @@
                 </div>
               </div>
 
+              <div class="form-row">
+                <div class="form-col full">
+                  <label for="inputGambar">Gambar Produk</label>
+                  <input type="file" id="inputGambar" accept="image/*" style="padding: 6px 12px;" />
+                  <div id="gambarPreviewContainer" style="margin-top: 10px; display: none; align-items: center; gap: 10px;">
+                    <img id="gambarPreview" src="" alt="Preview" style="max-height: 80px; border-radius: var(--radius); border: 2px solid var(--border);" />
+                    <button type="button" id="btnRemoveGambar" style="padding: 4px 8px; background: var(--danger); color: #fff; border: none; border-radius: 4px; cursor: pointer; font-size: 11px;">Hapus Gambar</button>
+                  </div>
+                </div>
+              </div>
+
               <div class="form-actions">
                 <button type="reset" class="btn-reset" id="btnReset">🔄 Reset Form</button>
                 <button type="submit" class="btn-submit" id="btnSubmit">💾 Simpan Produk</button>
@@ -279,6 +290,16 @@
                 <div class="form-col full">
                   <label for="editDeskripsi">Deskripsi</label>
                   <textarea id="editDeskripsi" rows="3"></textarea>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-col full">
+                  <label for="editGambar">Ganti Gambar Produk</label>
+                  <input type="file" id="editGambar" accept="image/*" style="padding: 6px 12px;" />
+                  <div id="editGambarPreviewContainer" style="margin-top: 10px; display: none; align-items: center; gap: 10px;">
+                    <img id="editGambarPreview" src="" alt="Preview" style="max-height: 80px; border-radius: var(--radius); border: 2px solid var(--border);" />
+                    <button type="button" id="btnRemoveEditGambar" style="padding: 4px 8px; background: var(--danger); color: #fff; border: none; border-radius: 4px; cursor: pointer; font-size: 11px;">Hapus Gambar</button>
+                  </div>
                 </div>
               </div>
             </form>

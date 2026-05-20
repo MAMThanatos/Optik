@@ -102,18 +102,24 @@ function renderProducts(products) {
 
   grid.innerHTML = products
     .map(
-      (p) => `
-    <div class="product-card" onclick="addToCart('${p.id}')">
-      <div class="add-badge">+</div>
-      <div class="prod-category">${p.kategori}</div>
-      <div class="prod-name">${p.nama}</div>
-      <div class="prod-brand">${p.merek}</div>
-      <div class="prod-price">${formatRupiah(p.harga)}</div>
-      <div class="prod-stock ${p.stok <= 5 ? "low" : ""}">
-        Stok: ${p.stok} ${p.stok <= 5 ? "⚠️" : ""}
-      </div>
-    </div>
-  `
+      (p) => {
+        const imageHtml = p.gambar 
+          ? `<div class="prod-img-container"><img src="../${p.gambar}" class="prod-img" alt="${p.nama}" /></div>` 
+          : `<div class="prod-img-container"><div class="prod-no-img">👓</div></div>`;
+        return `
+          <div class="product-card" onclick="addToCart('${p.id}')">
+            <div class="add-badge">+</div>
+            ${imageHtml}
+            <div class="prod-category">${p.kategori}</div>
+            <div class="prod-name">${p.nama}</div>
+            <div class="prod-brand">${p.merek}</div>
+            <div class="prod-price">${formatRupiah(p.harga)}</div>
+            <div class="prod-stock ${p.stok <= 5 ? "low" : ""}">
+              Stok: ${p.stok} ${p.stok <= 5 ? "⚠️" : ""}
+            </div>
+          </div>
+        `;
+      }
     )
     .join("");
 }

@@ -1,6 +1,8 @@
 let productList = [];
 let editingProductId = null;
 let deletingProductId = null;
+let selectedInputGambarBase64 = "";
+let selectedEditGambarBase64 = "";
 
 document.addEventListener("DOMContentLoaded", async function () {
   await fetchSession();
@@ -150,8 +152,15 @@ function renderProductTable(products) {
       <td>${index + 1}</td>
       <td><strong>${p.id}</strong></td>
       <td>
-        <div style="font-weight:600;">${p.nama}</div>
-        <div style="font-size:11px;color:var(--text-secondary);margin-top:2px;">${p.deskripsi || "-"}</div>
+        <div style="display: flex; align-items: center; gap: 10px;">
+          ${p.gambar 
+            ? `<img src="../${p.gambar}" style="width: 40px; height: 40px; object-fit: cover; border-radius: 6px; border: 1px solid var(--border);" />` 
+            : `<div style="width: 40px; height: 40px; background: #edf2f7; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 20px; border: 1px solid var(--border);">👓</div>`}
+          <div>
+            <div style="font-weight:600;">${p.nama}</div>
+            <div style="font-size:11px;color:var(--text-secondary);margin-top:2px;">${p.deskripsi || "-"}</div>
+          </div>
+        </div>
       </td>
       <td><span class="status-badge status-selesai" style="background:#EBF8FF;color:#2B6CB0;">${p.kategori}</span></td>
       <td>${p.merek}</td>
@@ -192,6 +201,77 @@ function setupFormEvents() {
   const form = document.getElementById("productForm");
   if (!form) return;
 
+  // Penanganan input gambar form tambah
+  const inputGambar = document.getElementById("inputGambar");
+  const gambarPreviewContainer = document.getElementById("gambarPreviewContainer");
+  const gambarPreview = document.getElementById("gambarPreview");
+  const btnRemoveGambar = document.getElementById("btnRemoveGambar");
+
+  if (inputGambar) {
+    inputGambar.addEventListener("change", function () {
+      const file = this.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          selectedInputGambarBase64 = e.target.result;
+          if (gambarPreview) gambarPreview.src = selectedInputGambarBase64;
+          if (gambarPreviewContainer) gambarPreviewContainer.style.display = "flex";
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  }
+
+  if (btnRemoveGambar) {
+    btnRemoveGambar.addEventListener("click", function () {
+      selectedInputGambarBase64 = "";
+      if (inputGambar) inputGambar.value = "";
+      if (gambarPreview) gambarPreview.src = "";
+      if (gambarPreviewContainer) gambarPreviewContainer.style.display = "none";
+    });
+  }
+
+  // Penanganan input gambar modal edit
+  const editGambar = document.getElementById("editGambar");
+  const editGambarPreviewContainer = document.getElementById("editGambarPreviewContainer");
+  const editGambarPreview = document.getElementById("editGambarPreview");
+  const btnRemoveEditGambar = document.getElementById("btnRemoveEditGambar");
+
+  if (editGambar) {
+    editGambar.addEventListener("change", function () {
+      const file = this.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          selectedEditGambarBase64 = e.target.result;
+          if (editGambarPreview) editGambarPreview.src = selectedEditGambarBase64;
+          if (editGambarPreviewContainer) editGambarPreviewContainer.style.display = "flex";
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  }
+
+  if (btnRemoveEditGambar) {
+    btnRemoveEditGambar.addEventListener("click", function () {
+      selectedEditGambarBase64 = "";
+      if (editGambar) editGambar.value = "";
+      if (editGambarPreview) editGambarPreview.src = "";
+      if (editGambarPreviewContainer) editGambarPreviewContainer.style.display = "none";
+    });
+  }
+
+  // Penanganan tombol reset form
+  const btnReset = document.getElementById("btnReset");
+  if (btnReset) {
+    btnReset.addEventListener("click", function () {
+      selectedInputGambarBase64 = "";
+      if (inputGambar) inputGambar.value = "";
+      if (gambarPreview) gambarPreview.src = "";
+      if (gambarPreviewContainer) gambarPreviewContainer.style.display = "none";
+    });
+  }
+
   form.addEventListener("submit", async function (e) {
     e.preventDefault();
 
@@ -219,6 +299,7 @@ function setupFormEvents() {
       stok: stok,
       ukuranLensa: ukuran,
       deskripsi: deskripsi,
+      gambar: selectedInputGambarBase64,
     };
 
     try {
@@ -231,6 +312,9 @@ function setupFormEvents() {
 
       if (result.status === "success") {
         form.reset();
+        selectedInputGambarBase64 = "";
+        if (gambarPreviewContainer) gambarPreviewContainer.style.display = "none";
+        if (gambarPreview) gambarPreview.src = "";
         await loadProducts();
         showToast("✅", `Produk "${nama}" berhasil ditambahkan!`);
       } else {
@@ -329,6 +413,10 @@ function openEditModal(productId) {
   if (!product) return;
 
   editingProductId = productId;
+  selectedEditGambarBase64 = "";
+
+  const editGambar = document.getElementById("editGambar");
+  if (editGambar) editGambar.value = "";
 
   document.getElementById("editId").value = product.id;
   document.getElementById("editNama").value = product.nama;
@@ -339,6 +427,16 @@ function openEditModal(productId) {
   document.getElementById("editStok").value = product.stok;
   document.getElementById("editDeskripsi").value = product.deskripsi || "";
 
+  const editGambarPreview = document.getElementById("editGambarPreview");
+  const editGambarPreviewContainer = document.getElementById("editGambarPreviewContainer");
+  if (product.gambar) {
+    if (editGambarPreview) editGambarPreview.src = "../" + product.gambar;
+    if (editGambarPreviewContainer) editGambarPreviewContainer.style.display = "flex";
+  } else {
+    if (editGambarPreview) editGambarPreview.src = "";
+    if (editGambarPreviewContainer) editGambarPreviewContainer.style.display = "none";
+  }
+
   document.getElementById("editModal").classList.add("show");
 }
 
@@ -348,6 +446,13 @@ function openEditModal(productId) {
 function closeEditModal() {
   document.getElementById("editModal").classList.remove("show");
   editingProductId = null;
+  selectedEditGambarBase64 = "";
+  const editGambar = document.getElementById("editGambar");
+  if (editGambar) editGambar.value = "";
+  const editGambarPreview = document.getElementById("editGambarPreview");
+  const editGambarPreviewContainer = document.getElementById("editGambarPreviewContainer");
+  if (editGambarPreview) editGambarPreview.src = "";
+  if (editGambarPreviewContainer) editGambarPreviewContainer.style.display = "none";
 }
 
 /**
@@ -379,6 +484,7 @@ async function saveEditProduct() {
     stok: stok,
     ukuranLensa: ukuran,
     deskripsi: deskripsi,
+    gambar: selectedEditGambarBase64,
   };
 
   try {

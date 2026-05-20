@@ -5,17 +5,22 @@ include_once '../config/koneksi.php';
 $queries = [
     "ALTER TABLE `kacamata` ADD COLUMN `nama_produk` VARCHAR(255) NOT NULL AFTER `kode_barang`;",
     "ALTER TABLE `kacamata` ADD COLUMN `ukuran_lensa` VARCHAR(100) NULL AFTER `merek`;",
-    "ALTER TABLE `kacamata` ADD COLUMN `deskripsi` TEXT NULL AFTER `kategori`;"
+    "ALTER TABLE `kacamata` ADD COLUMN `deskripsi` TEXT NULL AFTER `kategori`;",
+    "ALTER TABLE `kacamata` ADD COLUMN `gambar` VARCHAR(255) NULL AFTER `deskripsi`;"
 ];
 
 $success_count = 0;
 $errors = [];
 
 foreach ($queries as $query) {
-    if (mysqli_query($conn, $query)) {
-        $success_count++;
-    } else {
-        $errors[] = mysqli_error($conn);
+    try {
+        if (mysqli_query($conn, $query)) {
+            $success_count++;
+        } else {
+            $errors[] = mysqli_error($conn);
+        }
+    } catch (Exception $e) {
+        $errors[] = $e->getMessage();
     }
 }
 
