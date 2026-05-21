@@ -43,6 +43,26 @@ function initLoginPage() {
 
   clearSession();
 
+  const togglePasswordBtn = document.getElementById("togglePassword");
+  const passwordInput = document.getElementById("password");
+
+  if (togglePasswordBtn && passwordInput) {
+    const eyeIcon = togglePasswordBtn.querySelector(".eye-icon");
+    const eyeOffIcon = togglePasswordBtn.querySelector(".eye-off-icon");
+
+    togglePasswordBtn.addEventListener("click", function () {
+      if (passwordInput.type === "password") {
+        passwordInput.type = "text";
+        eyeIcon.style.display = "none";
+        eyeOffIcon.style.display = "block";
+      } else {
+        passwordInput.type = "password";
+        eyeIcon.style.display = "block";
+        eyeOffIcon.style.display = "none";
+      }
+    });
+  }
+
   form.addEventListener("submit", async function (e) {
     e.preventDefault();
 
