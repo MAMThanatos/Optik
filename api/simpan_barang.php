@@ -99,6 +99,7 @@ if(isset($data->id) && isset($data->nama) && isset($data->kategori)) {
                     ukuran_lensa = '$ukuran_lensa', 
                     kategori = '$kategori', 
                     deskripsi = '$deskripsi', 
+                    harga_beli = $harga_beli, 
                     harga_jual = $harga_jual, 
                     stok_tersedia = $stok_tersedia 
                     $updateGambarSql

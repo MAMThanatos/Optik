@@ -55,7 +55,8 @@ CREATE TABLE `kacamata` (
   `deskripsi` text DEFAULT NULL,
   `harga_beli` decimal(10,2) NOT NULL,
   `harga_jual` decimal(10,2) NOT NULL,
-  `stok_tersedia` int(11) NOT NULL DEFAULT 0
+  `stok_tersedia` int(11) NOT NULL DEFAULT 0,
+  `gambar` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------

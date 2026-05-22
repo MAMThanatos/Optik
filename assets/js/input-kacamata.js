@@ -279,11 +279,12 @@ function setupFormEvents() {
     const merek = document.getElementById("inputMerek").value.trim();
     const kategori = document.getElementById("inputKategori").value;
     const ukuran = document.getElementById("inputUkuran").value.trim() || "-";
+    const harga_beli = parseInt(document.getElementById("inputHargaBeli").value) || 0;
     const harga = parseInt(document.getElementById("inputHarga").value) || 0;
     const stok = parseInt(document.getElementById("inputStok").value) || 0;
     const deskripsi = document.getElementById("inputDeskripsi").value.trim();
 
-    if (!nama || !merek || !kategori || harga <= 0) {
+    if (!nama || !merek || !kategori || harga <= 0 || harga_beli <= 0) {
       showToast("❌", "Mohon lengkapi semua field yang wajib diisi!");
       return;
     }
@@ -296,6 +297,7 @@ function setupFormEvents() {
       kategori: kategori,
       merek: merek,
       harga: harga,
+      harga_beli: harga_beli,
       stok: stok,
       ukuranLensa: ukuran,
       deskripsi: deskripsi,
@@ -423,6 +425,7 @@ function openEditModal(productId) {
   document.getElementById("editMerek").value = product.merek;
   document.getElementById("editKategori").value = product.kategori;
   document.getElementById("editUkuran").value = product.ukuranLensa || "";
+  document.getElementById("editHargaBeli").value = product.harga_beli || 0;
   document.getElementById("editHarga").value = product.harga;
   document.getElementById("editStok").value = product.stok;
   document.getElementById("editDeskripsi").value = product.deskripsi || "";
@@ -466,10 +469,11 @@ async function saveEditProduct() {
   const kategori = document.getElementById("editKategori").value;
   const ukuran = document.getElementById("editUkuran").value.trim() || "-";
   const harga = parseInt(document.getElementById("editHarga").value) || 0;
+  const harga_beli = parseInt(document.getElementById("editHargaBeli").value) || 0;
   const stok = parseInt(document.getElementById("editStok").value) || 0;
   const deskripsi = document.getElementById("editDeskripsi").value.trim();
 
-  if (!nama || !merek || !kategori || harga <= 0) {
+  if (!nama || !merek || !kategori || harga <= 0 || harga_beli <= 0) {
     showToast("❌", "Mohon lengkapi semua field yang wajib diisi!");
     return;
   }
@@ -481,6 +485,7 @@ async function saveEditProduct() {
     kategori: kategori,
     merek: merek,
     harga: harga,
+    harga_beli: harga_beli,
     stok: stok,
     ukuranLensa: ukuran,
     deskripsi: deskripsi,
