@@ -422,6 +422,19 @@
   border-color: var(--accent);
 }
 
+/* Cart Customer Prescription Styling */
+.cart-customer input {
+  width: 100% !important;
+  box-sizing: border-box !important;
+  outline: none;
+  transition: var(--transition);
+}
+
+.cart-customer input:focus {
+  border-color: var(--accent) !important;
+  box-shadow: 0 0 0 2px rgba(56,178,172,0.15);
+}
+
 /* Totals */
 .cart-totals {
   padding: 12px 20px;
