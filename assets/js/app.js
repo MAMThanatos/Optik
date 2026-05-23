@@ -22,7 +22,7 @@ function initApp() {
     initDashboard("manager");
   } else if (path.includes("dashboard-kasir.html")) {
     initDashboard("karyawan");
-  } else if (path.includes("cek-stok.html") || path.includes("kasir.html")) {
+  } else if (path.includes("cek-stok.html") || path.includes("kasir.html") || path.includes("data-pelanggan.html")) {
     const session = getSession();
     if (session) {
       initDashboard(session.role);
