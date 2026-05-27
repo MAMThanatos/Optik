@@ -49,12 +49,8 @@ if(!empty($data['bank'])) {
 mysqli_begin_transaction($conn);
 
 try {
-    // 1. Cari ID Pengguna (Kasir)
-    $id_pengguna = 0; // Default jika tidak ditemukan
-    $resPengguna = mysqli_query($conn, "SELECT id_pengguna FROM pengguna WHERE username = '$kasir_username'");
-    if($resPengguna && mysqli_num_rows($resPengguna) > 0) {
-        $id_pengguna = mysqli_fetch_assoc($resPengguna)['id_pengguna'];
-    }
+    // 1. Ambil ID Pengguna (Kasir)
+    $id_pengguna = (int)$data['kasirId'];
 
     // 2. Simpan atau Cari ID Pelanggan
     $id_pelanggan = "NULL";
