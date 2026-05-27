@@ -94,6 +94,14 @@
 
       <!-- Page Content -->
       <div class="page-content lk-page">
+
+        <!-- Print Kop Header (Hanya Muncul Saat Dicetak) -->
+        <div class="print-header-section" style="display: none; text-align: center; margin-bottom: 20px;">
+          <h2 id="printStoreName" style="margin: 0; font-size: 22px; text-transform: uppercase; font-family: sans-serif; font-weight: 700; color: #000;">Optik Lucky Prastica</h2>
+          <h3 style="margin: 5px 0; font-size: 15px; font-weight: 600; font-family: sans-serif; color: #000;">Laporan Pemasukan dan Pengeluaran Sederhana</h3>
+          <p id="printPeriod" style="margin: 5px 0; font-size: 13px; font-weight: 600; font-family: sans-serif; color: #333;">Periode: Bulan Ini</p>
+          <hr style="border: 1px solid #000; margin: 15px 0 20px 0;" />
+        </div>
         
         <!-- Filter Bar -->
         <div class="filter-bar">
@@ -147,13 +155,15 @@
             <table id="expenseTable">
               <thead>
                 <tr>
-                  <th>Tanggal</th>
+                  <th>No.</th>
+                  <th>Tanggal & Waktu</th>
                   <th>No. Referensi</th>
                   <th>Tipe</th>
                   <th>Kategori</th>
                   <th>Keterangan</th>
                   <th>Dicatat Oleh</th>
-                  <th>Nominal</th>
+                  <th>Pemasukan</th>
+                  <th>Pengeluaran</th>
                   <th>Aksi</th>
                 </tr>
               </thead>
@@ -201,6 +211,24 @@
           <div class="modal-footer">
             <button class="btn-cancel" id="btnCancelExpense">Batal</button>
             <button class="btn-confirm-pay" id="btnSaveExpense">💾 Simpan</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal Detail Transaksi -->
+      <div class="modal-overlay" id="txDetailModal">
+        <div class="modal-card" style="max-width: 550px;">
+          <div class="modal-header">
+            <h2>👁️ Rincian Transaksi</h2>
+            <button class="modal-close" id="btnCloseTxDetail">&times;</button>
+          </div>
+          <div class="modal-body" style="max-height: 75vh; overflow-y: auto; padding: 20px;">
+            <div id="txDetailContent">
+               <!-- Rendered dynamically by JS -->
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn-cancel" id="btnCloseTxDetailBottom">Tutup</button>
           </div>
         </div>
       </div>

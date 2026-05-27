@@ -284,11 +284,52 @@
 }
 
 @media print {
-  .sidebar, .top-header, .filter-bar, .table-actions {
+  .sidebar, .top-header, .filter-bar, .table-actions, .action-btn {
     display: none !important;
   }
   .dashboard-wrapper { display: block; }
   .main-content { margin-left: 0; padding: 0; }
   .table-section { box-shadow: none; border: none; padding: 0; }
-  .lk-stats { margin-bottom: 40px; }
+  .lk-stats { margin-bottom: 25px; display: grid !important; grid-template-columns: repeat(4, 1fr) !important; }
+  .print-header-section {
+    display: block !important;
+  }
+  #expenseTable {
+    width: 100% !important;
+    border: 1px solid #000 !important;
+    border-collapse: collapse !important;
+  }
+  #expenseTable th, #expenseTable td {
+    border: 1px solid #000 !important;
+    padding: 8px 6px !important;
+    text-align: center !important;
+    color: #000 !important;
+  }
+  #expenseTable th {
+    background-color: #f2f2f2 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  /* Left align Kategori & Keterangan in print for readability */
+  #expenseTable td:nth-child(5), #expenseTable td:nth-child(6) {
+    text-align: left !important;
+  }
+  /* Hide the Aksi (Action/Delete) column entirely when printing */
+  #expenseTable th:last-child, #expenseTable td:last-child {
+    display: none !important;
+  }
+  /* Style summary rows (Total & Saldo Akhir) */
+  #expenseTable tbody tr.summary-row td {
+    font-weight: 700 !important;
+    background-color: #f9fafb !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  #expenseTable tbody tr.saldo-row td {
+    font-weight: 700 !important;
+    background-color: #e6fffa !important;
+    color: #319795 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
 }

@@ -86,4 +86,75 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
   });
 
+  // ----------------------------------------------------
+  // LOGIKA PUSAT RESET & PEMBERSIHAN DATA AMAN
+  // ----------------------------------------------------
+  const resetForm = document.getElementById("resetDataForm");
+  const cbTransactions = document.getElementById("resetTransactions");
+  const cbCustomers = document.getElementById("resetCustomers");
+  const cbProducts = document.getElementById("resetProducts");
+  const confirmInput = document.getElementById("confirmResetInput");
+  const btnReset = document.getElementById("btnResetData");
+
+  function validateResetForm() {
+    if (!btnReset) return;
+    const isOneChecked = cbTransactions.checked || cbCustomers.checked || cbProducts.checked;
+    const isConfirmValid = confirmInput.value.trim() === "RESET";
+    btnReset.disabled = !(isOneChecked && isConfirmValid);
+  }
+
+  if (cbTransactions) cbTransactions.addEventListener("change", validateResetForm);
+  if (cbCustomers) cbCustomers.addEventListener("change", validateResetForm);
+  if (cbProducts) cbProducts.addEventListener("change", validateResetForm);
+  if (confirmInput) confirmInput.addEventListener("input", validateResetForm);
+
+  if (resetForm) {
+    resetForm.addEventListener("submit", async function (e) {
+      e.preventDefault();
+      
+      const selectedData = [];
+      if (cbTransactions.checked) selectedData.push("Riwayat Transaksi & Keuangan");
+      if (cbCustomers.checked) selectedData.push("Seluruh Data Pelanggan");
+      if (cbProducts.checked) selectedData.push("Seluruh Data & Stok Kacamata");
+
+      const confirmMsg = `PERINGATAN KERAS! Anda akan menghapus data berikut secara PERMANEN:\n\n` + 
+                         selectedData.map((d, i) => `${i + 1}. ${d}`).join("\n") + 
+                         `\n\nApakah Anda benar-benar yakin? Tindakan ini tidak dapat dibatalkan!`;
+
+      if (confirm(confirmMsg)) {
+        btnReset.disabled = true;
+        btnReset.textContent = "🔥 Menghapus Data...";
+
+        const payload = {
+          confirm: "RESET",
+          resetTransactions: cbTransactions.checked,
+          resetCustomers: cbCustomers.checked,
+          resetProducts: cbProducts.checked
+        };
+
+        try {
+          const response = await fetch("../api/reset_data.php", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+          });
+          const result = await response.json();
+          if (result.status === "success") {
+            alert("Sukses! Data terpilih telah berhasil dibersihkan dari database.");
+            location.reload();
+          } else {
+            alert("Gagal melakukan reset: " + result.message);
+          }
+        } catch (err) {
+          console.error(err);
+          alert("Terjadi kesalahan jaringan saat menghubungi server.");
+        } finally {
+          btnReset.disabled = false;
+          btnReset.textContent = "🔥 Jalankan Pembersihan Data";
+          validateResetForm();
+        }
+      }
+    });
+  }
+
 });

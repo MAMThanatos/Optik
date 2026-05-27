@@ -196,6 +196,49 @@
           </form>
         </div>
 
+        <div class="settings-container" style="margin-top: 24px; border: 1px solid #fed7d7; background: #fffaf0;">
+          <div class="settings-header" style="border-bottom: 1px solid #feb2b2;">
+            <h2 style="color: #c53030;">🔥 Pusat Reset & Pembersihan Data</h2>
+          </div>
+
+          <div style="margin-bottom: 20px; font-size: 0.9rem; color: #742a2a; line-height: 1.5;">
+            <strong>PERINGATAN KERAS:</strong> Menghapus data akan menghapus catatan secara permanen dari database MySQL dan tidak dapat dikembalikan. Silakan centang data yang ingin Anda bersihkan secara hati-hati.
+          </div>
+
+          <form id="resetDataForm">
+            <div class="form-group" style="margin-bottom: 15px;">
+              <label style="cursor: pointer; display: flex; align-items: center; gap: 8px; font-weight: normal; color: #2d3748;">
+                <input type="checkbox" id="resetTransactions" style="width: auto; cursor: pointer;" />
+                <span>Hapus Riwayat Transaksi & Catatan Keuangan</span>
+              </label>
+            </div>
+            
+            <div class="form-group" style="margin-bottom: 15px;">
+              <label style="cursor: pointer; display: flex; align-items: center; gap: 8px; font-weight: normal; color: #2d3748;">
+                <input type="checkbox" id="resetCustomers" style="width: auto; cursor: pointer;" />
+                <span>Hapus Seluruh Data Pelanggan</span>
+              </label>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 20px;">
+              <label style="cursor: pointer; display: flex; align-items: center; gap: 8px; font-weight: normal; color: #2d3748;">
+                <input type="checkbox" id="resetProducts" style="width: auto; cursor: pointer;" />
+                <span>Kosongkan Seluruh Stok & Data Kacamata</span>
+              </label>
+            </div>
+
+            <div class="form-group">
+              <label for="confirmResetInput" style="color: #c53030; font-weight: 600;">Konfirmasi Tindakan Keamanan</label>
+              <input type="text" id="confirmResetInput" placeholder="Ketik kata 'RESET' untuk mengonfirmasi..." style="background: white; border: 1px solid #feb2b2;" />
+              <span class="help-text" style="color: #9b2c2c;">Tombol reset hanya akan aktif jika Anda mengetik kata 'RESET' (huruf besar semua) dan mencentang minimal salah satu pilihan data di atas.</span>
+            </div>
+
+            <button type="submit" id="btnResetData" class="btn-save" style="background: linear-gradient(135deg, #e53e3e, #9b2c2c); margin-top: 10px;" disabled>
+              🔥 Jalankan Pembersihan Data
+            </button>
+          </form>
+        </div>
+
       </div>
     </main>
   </div>
