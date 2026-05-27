@@ -323,7 +323,10 @@ async function fetchDashboardData(session) {
                   <td>${tx.produk_contoh || "-"}</td>
                   <td style="font-weight:600;">${formatRupiah(parseFloat(tx.total))}</td>
                   <td>${tx.kasirNama}</td>
-                  <td><span class="status-badge ${tx.status === 'Sudah Diambil' || tx.status === 'Selesai' || !tx.status ? 'success' : 'warning'}">${tx.status || 'Sudah Diambil'}</span></td>
+                  <td>
+                    <span class="status-badge ${tx.status === 'Sudah Diambil' || tx.status === 'Selesai' || !tx.status ? 'success' : 'warning'}">${tx.status || 'Sudah Diambil'}</span>
+                    ${tx.status === 'Diproses' ? `<button class="btn-lunas-dp" onclick="lunasinDP('${tx.id}', ${parseFloat(tx.total)})" style="margin-left: 8px; padding: 4px 8px; font-size: 11px; background: #3182ce; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight:600; transition: background 0.2s;" onmouseover="this.style.background='#2b6cb0'" onmouseout="this.style.background='#3182ce'">Pelunasan</button>` : ''}
+                  </td>
                 </tr>
               `;
             } else {
@@ -333,7 +336,10 @@ async function fetchDashboardData(session) {
                   <td>${tx.pelanggan || "-"}</td>
                   <td>${tx.produk_contoh || "-"}</td>
                   <td style="font-weight:600;">${formatRupiah(parseFloat(tx.total))}</td>
-                  <td><span class="status-badge ${tx.status === 'Sudah Diambil' || tx.status === 'Selesai' || !tx.status ? 'success' : 'warning'}">${tx.status || 'Sudah Diambil'}</span></td>
+                  <td>
+                    <span class="status-badge ${tx.status === 'Sudah Diambil' || tx.status === 'Selesai' || !tx.status ? 'success' : 'warning'}">${tx.status || 'Sudah Diambil'}</span>
+                    ${tx.status === 'Diproses' ? `<button class="btn-lunas-dp" onclick="lunasinDP('${tx.id}', ${parseFloat(tx.total)})" style="margin-left: 8px; padding: 4px 8px; font-size: 11px; background: #3182ce; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight:600; transition: background 0.2s;" onmouseover="this.style.background='#2b6cb0'" onmouseout="this.style.background='#3182ce'">Pelunasan</button>` : ''}
+                  </td>
                 </tr>
               `;
             }
@@ -348,3 +354,25 @@ async function fetchDashboardData(session) {
     animateStats();
   }
 }
+
+window.lunasinDP = async function(txId, total) {
+  if (confirm(`Apakah Anda yakin ingin melakukan pelunasan sisa tagihan untuk No. Invoice ${txId}?`)) {
+    try {
+      const response = await fetch("../api/pelunasan_transaksi.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id_transaksi: txId })
+      });
+      const result = await response.json();
+      if (result.status === "success") {
+        alert("Pembayaran sisa tagihan berhasil dilunasi!");
+        location.reload();
+      } else {
+        alert("Gagal melakukan pelunasan: " + result.message);
+      }
+    } catch (e) {
+      console.error(e);
+      alert("Terjadi kesalahan jaringan saat memproses pelunasan.");
+    }
+  }
+};

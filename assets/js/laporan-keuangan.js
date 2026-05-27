@@ -69,6 +69,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     
     let totalPendapatan = 0;
     let totalLabaKotor = 0;
+    let ledger = [];
 
     filteredTxs.forEach(tx => {
       totalPendapatan += tx.total;
@@ -77,7 +78,6 @@ document.addEventListener("DOMContentLoaded", async function () {
       let hpp = 0;
       if (tx.items && tx.items.length > 0) {
         tx.items.forEach(item => {
-          // Jika ada harga_beli di history, pakai itu. Jika tidak, gunakan margin 40% (HPP 60%) sebagai fallback untuk data lama.
           let hb = item.harga_beli !== undefined ? item.harga_beli : (item.harga * 0.6);
           hpp += (hb * item.qty);
         });
@@ -86,33 +86,78 @@ document.addEventListener("DOMContentLoaded", async function () {
       }
       
       totalLabaKotor += (tx.total - hpp); 
+
+      // Tambahkan Pemasukan ke ledger
+      ledger.push({
+        tanggal: tx.tanggal,
+        id: tx.id,
+        tipe: 'Pemasukan',
+        kategori: 'Penjualan',
+        keterangan: tx.pelanggan ? `Penjualan kacamata ke ${tx.pelanggan}` : 'Penjualan Kacamata',
+        operator: tx.kasirNama || '-',
+        nominal: tx.total,
+        bisaDihapus: false
+      });
     });
 
     let filteredExps = expenses.filter(ex => isDateMatch(ex.tanggal, filterVal));
-    
-    filteredExps.sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal));
-
     let totalPengeluaran = 0;
+
+    filteredExps.forEach(ex => {
+      totalPengeluaran += ex.nominal;
+
+      // Tambahkan Pengeluaran ke ledger
+      ledger.push({
+        tanggal: ex.tanggal,
+        id: ex.id,
+        tipe: 'Pengeluaran',
+        kategori: ex.kategori,
+        keterangan: ex.keterangan || '-',
+        operator: ex.kasirNama || '-',
+        nominal: ex.nominal,
+        bisaDihapus: true
+      });
+    });
+
+    // Urutkan ledger berdasarkan tanggal descending
+    ledger.sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal));
+
     tbody.innerHTML = "";
 
-    if (filteredExps.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:20px;color:#6b7280;">Belum ada catatan pengeluaran</td></tr>`;
+    if (ledger.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:20px;color:#6b7280;">Belum ada catatan keuangan</td></tr>`;
     } else {
-      filteredExps.forEach(ex => {
-        totalPengeluaran += ex.nominal;
-
-        const dateObj = new Date(ex.tanggal);
+      ledger.forEach(item => {
+        const dateObj = new Date(item.tanggal);
         const dateStr = dateObj.toLocaleDateString("id-ID", { day:"2-digit", month:"short", year:"numeric" });
+        const timeStr = dateObj.toLocaleTimeString("id-ID", { hour:"2-digit", minute:"2-digit" });
 
         const tr = document.createElement("tr");
+        
+        // CSS inline styles for premium look
+        const badgeStyle = item.tipe === 'Pemasukan' 
+          ? 'background: #e6fffa; color: #319795; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; display: inline-block;'
+          : 'background: #fff5f5; color: #e53e3e; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; display: inline-block;';
+
+        const nominalStyle = item.tipe === 'Pemasukan' 
+          ? 'color: #319795; font-weight: 700;' 
+          : 'color: #e53e3e; font-weight: 700;';
+
+        const nominalSign = item.tipe === 'Pemasukan' ? '+ ' : '- ';
+
         tr.innerHTML = `
-          <td>${dateStr}</td>
-          <td style="font-weight:600;">${ex.kategori}</td>
-          <td>${ex.keterangan || "-"}</td>
-          <td>${ex.kasirNama}</td>
-          <td style="font-weight:700;" class="text-danger">- ${formatRupiah(ex.nominal)}</td>
           <td>
-            <button class="action-btn" title="Hapus" onclick="deleteExpense('${ex.id}')">🗑️</button>
+            <div style="font-weight:600;">${dateStr}</div>
+            <div style="font-size:0.8rem;color:var(--text-muted);">${timeStr}</div>
+          </td>
+          <td style="font-family:monospace;font-weight:600;">${item.id}</td>
+          <td><span style="${badgeStyle}">${item.tipe}</span></td>
+          <td style="font-weight:600;">${item.kategori}</td>
+          <td>${item.keterangan}</td>
+          <td>${item.operator}</td>
+          <td style="${nominalStyle}">${nominalSign}${formatRupiah(item.nominal)}</td>
+          <td>
+            ${item.bisaDihapus ? `<button class="action-btn" title="Hapus" onclick="deleteExpense('${item.id}')">🗑️</button>` : '-'}
           </td>
         `;
         tbody.appendChild(tr);
@@ -134,7 +179,7 @@ document.addEventListener("DOMContentLoaded", async function () {
       labaBersihEl.style.color = "var(--success)";
     }
 
-    document.getElementById("expenseInfo").textContent = `Menampilkan ${filteredExps.length} catatan pengeluaran`;
+    document.getElementById("expenseInfo").textContent = `Menampilkan ${ledger.length} catatan keuangan`;
   }
 
   const modal = document.getElementById("expenseModal");
