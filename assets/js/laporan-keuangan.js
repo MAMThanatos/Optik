@@ -192,36 +192,23 @@ document.addEventListener("DOMContentLoaded", async function () {
         tbody.appendChild(tr);
       });
 
-      // Tambahkan baris Total
+      // Tambahkan baris Total (menggunakan colspan=7 agar berbaris rapi)
       const totalTr = document.createElement("tr");
       totalTr.className = "summary-row";
       totalTr.innerHTML = `
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td style="font-weight: 700;">Total</td>
-        <td></td>
-        <td></td>
+        <td colspan="7" style="text-align: right; font-weight: 700; padding: 12px 16px;">Total</td>
         <td style="font-weight: 700; color: #319795; text-align: right;">${formatRupiah(totalPendapatan)}</td>
         <td style="font-weight: 700; color: #e53e3e; text-align: right;">${formatRupiah(totalPengeluaran)}</td>
         <td></td>
       `;
       tbody.appendChild(totalTr);
 
-      // Tambahkan baris Saldo Akhir
+      // Tambahkan baris Saldo Akhir (menggunakan colspan=8 agar berbaris rapi di kolom Pengeluaran)
       const saldoTr = document.createElement("tr");
       saldoTr.className = "saldo-row";
       const saldoAkhir = totalPendapatan - totalPengeluaran;
       saldoTr.innerHTML = `
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td style="font-weight: 700; color: #319795;">Saldo akhir</td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td colspan="8" style="text-align: right; font-weight: 700; color: #319795; padding: 12px 16px;">Saldo akhir</td>
         <td style="font-weight: 700; color: ${saldoAkhir >= 0 ? '#319795' : '#e53e3e'}; text-align: right;">${formatRupiah(saldoAkhir)}</td>
         <td></td>
       `;
@@ -408,6 +395,7 @@ document.addEventListener("DOMContentLoaded", async function () {
   if(closeTxDetailBtnBottom) closeTxDetailBtnBottom.addEventListener("click", hideTxDetailModal);
 
   // ----------------------------------------------------
+  const modal = document.getElementById("expenseModal");
   const form = document.getElementById("expenseForm");
 
   document.getElementById("btnTambahPengeluaran").addEventListener("click", () => {

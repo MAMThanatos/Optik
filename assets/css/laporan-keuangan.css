@@ -136,6 +136,28 @@
   border-bottom: 2px solid var(--border-color, #e5e7eb);
 }
 
+/* Table column alignment rules for premium ledger grid */
+#expenseTable th:nth-child(1),
+#expenseTable td:nth-child(1),
+#expenseTable th:nth-child(4),
+#expenseTable td:nth-child(4),
+#expenseTable th:nth-child(10),
+#expenseTable td:nth-child(10) {
+  text-align: center;
+}
+
+#expenseTable th:nth-child(8),
+#expenseTable td:nth-child(8),
+#expenseTable th:nth-child(9),
+#expenseTable td:nth-child(9) {
+  text-align: right;
+}
+
+#expenseTable tbody tr.summary-row td,
+#expenseTable tbody tr.saldo-row td {
+  text-align: right;
+}
+
 #expenseTable tbody tr:hover {
   background-color: #f9fafb;
 }
@@ -302,7 +324,7 @@
   #expenseTable th, #expenseTable td {
     border: 1px solid #000 !important;
     padding: 8px 6px !important;
-    text-align: center !important;
+    text-align: left !important;
     color: #000 !important;
   }
   #expenseTable th {
@@ -310,18 +332,30 @@
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }
+  /* Center align No & Tipe in print */
+  #expenseTable th:nth-child(1), #expenseTable td:nth-child(1),
+  #expenseTable th:nth-child(4), #expenseTable td:nth-child(4) {
+    text-align: center !important;
+  }
   /* Left align Kategori & Keterangan in print for readability */
-  #expenseTable td:nth-child(5), #expenseTable td:nth-child(6) {
+  #expenseTable th:nth-child(5), #expenseTable td:nth-child(5),
+  #expenseTable th:nth-child(6), #expenseTable td:nth-child(6) {
     text-align: left !important;
+  }
+  /* Right align Pemasukan & Pengeluaran in print */
+  #expenseTable th:nth-child(8), #expenseTable td:nth-child(8),
+  #expenseTable th:nth-child(9), #expenseTable td:nth-child(9) {
+    text-align: right !important;
   }
   /* Hide the Aksi (Action/Delete) column entirely when printing */
   #expenseTable th:last-child, #expenseTable td:last-child {
     display: none !important;
   }
-  /* Style summary rows (Total & Saldo Akhir) */
+  /* Style summary rows (Total & Saldo Akhir) to align properly to the right */
   #expenseTable tbody tr.summary-row td {
     font-weight: 700 !important;
     background-color: #f9fafb !important;
+    text-align: right !important;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }
@@ -329,6 +363,7 @@
     font-weight: 700 !important;
     background-color: #e6fffa !important;
     color: #319795 !important;
+    text-align: right !important;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }
