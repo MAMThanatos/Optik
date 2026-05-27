@@ -323,7 +323,7 @@ async function fetchDashboardData(session) {
                   <td>${tx.produk_contoh || "-"}</td>
                   <td style="font-weight:600;">${formatRupiah(parseFloat(tx.total))}</td>
                   <td>${tx.kasirNama}</td>
-                  <td><span class="status-badge ${tx.status === 'Selesai' ? 'success' : 'warning'}">${tx.status}</span></td>
+                  <td><span class="status-badge ${tx.status === 'Sudah Diambil' || tx.status === 'Selesai' || !tx.status ? 'success' : 'warning'}">${tx.status || 'Sudah Diambil'}</span></td>
                 </tr>
               `;
             } else {
@@ -333,7 +333,7 @@ async function fetchDashboardData(session) {
                   <td>${tx.pelanggan || "-"}</td>
                   <td>${tx.produk_contoh || "-"}</td>
                   <td style="font-weight:600;">${formatRupiah(parseFloat(tx.total))}</td>
-                  <td><span class="status-badge ${tx.status === 'Selesai' ? 'success' : 'warning'}">${tx.status}</span></td>
+                  <td><span class="status-badge ${tx.status === 'Sudah Diambil' || tx.status === 'Selesai' || !tx.status ? 'success' : 'warning'}">${tx.status || 'Sudah Diambil'}</span></td>
                 </tr>
               `;
             }

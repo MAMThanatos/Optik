@@ -194,6 +194,7 @@ function addToCart(productId) {
     }
     cart.push({
       id: product.id,
+      db_id: product.db_id,
       nama: product.nama,
       harga: product.harga,
       harga_beli: product.harga_beli,
@@ -676,7 +677,7 @@ function confirmPayment() {
     od_sph, od_cyl, od_axis,
     os_sph, os_cyl, os_axis,
     pd, addisi,
-    statusPesanan: payStatus === "dp" ? "Diproses" : "Selesai",
+    statusPesanan: payStatus === "dp" ? "Diproses" : "Sudah Diambil",
     uangMuka: payStatus === "dp" ? requiredAmount : grandTotal,
     sisaTagihan: sisaTagihan,
     items: cart.map(item => ({...item})),

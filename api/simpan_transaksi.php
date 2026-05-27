@@ -55,9 +55,14 @@ try {
     // 2. Simpan atau Cari ID Pelanggan
     $id_pelanggan = "NULL";
     if($pelanggan !== "-" && $pelanggan !== "") {
-        $qPelanggan = "INSERT INTO pelanggan (nama_pelanggan, tanggal_daftar) VALUES ('$pelanggan', NOW())";
-        mysqli_query($conn, $qPelanggan);
-        $id_pelanggan = mysqli_insert_id($conn);
+        $cekPelanggan = mysqli_query($conn, "SELECT id_pelanggan FROM pelanggan WHERE nama_pelanggan = '$pelanggan' LIMIT 1");
+        if($cekPelanggan && mysqli_num_rows($cekPelanggan) > 0) {
+            $id_pelanggan = (int)mysqli_fetch_assoc($cekPelanggan)['id_pelanggan'];
+        } else {
+            $qPelanggan = "INSERT INTO pelanggan (nama_pelanggan, tanggal_daftar) VALUES ('$pelanggan', NOW())";
+            mysqli_query($conn, $qPelanggan);
+            $id_pelanggan = mysqli_insert_id($conn);
+        }
     }
 
     // 3. Simpan Transaksi Induk
@@ -85,11 +90,13 @@ try {
             $harga = (float)$item['harga'];
             $sub = $qty * $harga;
             
-            // Cari id_kacamata berdasarkan kode_barang
-            $id_kaca = 0;
-            $resKaca = mysqli_query($conn, "SELECT id_kacamata FROM kacamata WHERE kode_barang = '$kode_barang'");
-            if($resKaca && mysqli_num_rows($resKaca) > 0) {
-                $id_kaca = mysqli_fetch_assoc($resKaca)['id_kacamata'];
+            // Cari id_kacamata berdasarkan db_id atau kode_barang
+            $id_kaca = isset($item['db_id']) ? (int)$item['db_id'] : 0;
+            if ($id_kaca <= 0) {
+                $resKaca = mysqli_query($conn, "SELECT id_kacamata FROM kacamata WHERE kode_barang = '$kode_barang'");
+                if($resKaca && mysqli_num_rows($resKaca) > 0) {
+                    $id_kaca = (int)mysqli_fetch_assoc($resKaca)['id_kacamata'];
+                }
             }
             
             // Insert ke detail_transaksi
