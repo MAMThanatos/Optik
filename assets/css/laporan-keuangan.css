@@ -351,6 +351,11 @@
   #expenseTable th:last-child, #expenseTable td:last-child {
     display: none !important;
   }
+  /* Hide No. Referensi & Dicatat Oleh columns entirely when printing to prevent overflow */
+  #expenseTable th:nth-child(3), #expenseTable td:nth-child(3),
+  #expenseTable th:nth-child(7), #expenseTable td:nth-child(7) {
+    display: none !important;
+  }
   /* Style summary rows (Total & Saldo Akhir) to align properly to the right */
   #expenseTable tbody tr.summary-row td {
     font-weight: 700 !important;
