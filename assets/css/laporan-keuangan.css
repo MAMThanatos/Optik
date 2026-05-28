@@ -306,70 +306,12 @@
 }
 
 @media print {
-  .sidebar, .top-header, .filter-bar, .table-actions, .action-btn {
+  .sidebar, .top-header, .filter-bar, .table-actions, .action-btn, .lk-stats, .table-section, .table-footer {
     display: none !important;
   }
   .dashboard-wrapper { display: block; }
   .main-content { margin-left: 0; padding: 0; }
-  .table-section { box-shadow: none; border: none; padding: 0; }
-  .lk-stats { margin-bottom: 25px; display: grid !important; grid-template-columns: repeat(4, 1fr) !important; }
-  .print-header-section {
+  .print-header-section, .print-cashflow-report {
     display: block !important;
-  }
-  #expenseTable {
-    width: 100% !important;
-    border: 1px solid #000 !important;
-    border-collapse: collapse !important;
-  }
-  #expenseTable th, #expenseTable td {
-    border: 1px solid #000 !important;
-    padding: 8px 6px !important;
-    text-align: left !important;
-    color: #000 !important;
-  }
-  #expenseTable th {
-    background-color: #f2f2f2 !important;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
-  }
-  /* Center align No & Tipe in print */
-  #expenseTable th:nth-child(1), #expenseTable td:nth-child(1),
-  #expenseTable th:nth-child(4), #expenseTable td:nth-child(4) {
-    text-align: center !important;
-  }
-  /* Left align Kategori & Keterangan in print for readability */
-  #expenseTable th:nth-child(5), #expenseTable td:nth-child(5),
-  #expenseTable th:nth-child(6), #expenseTable td:nth-child(6) {
-    text-align: left !important;
-  }
-  /* Right align Pemasukan & Pengeluaran in print */
-  #expenseTable th:nth-child(8), #expenseTable td:nth-child(8),
-  #expenseTable th:nth-child(9), #expenseTable td:nth-child(9) {
-    text-align: right !important;
-  }
-  /* Hide the Aksi (Action/Delete) column entirely when printing */
-  #expenseTable th:last-child, #expenseTable td:last-child {
-    display: none !important;
-  }
-  /* Hide No. Referensi & Dicatat Oleh columns entirely when printing to prevent overflow */
-  #expenseTable th:nth-child(3), #expenseTable td:nth-child(3),
-  #expenseTable th:nth-child(7), #expenseTable td:nth-child(7) {
-    display: none !important;
-  }
-  /* Style summary rows (Total & Saldo Akhir) to align properly to the right */
-  #expenseTable tbody tr.summary-row td {
-    font-weight: 700 !important;
-    background-color: #f9fafb !important;
-    text-align: right !important;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
-  }
-  #expenseTable tbody tr.saldo-row td {
-    font-weight: 700 !important;
-    background-color: #e6fffa !important;
-    color: #319795 !important;
-    text-align: right !important;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
   }
 }

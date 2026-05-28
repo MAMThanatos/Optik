@@ -39,12 +39,19 @@ document.addEventListener("DOMContentLoaded", async function () {
     const now = new Date();
     
     let filteredTxs = transactions.filter(tx => {
-      const txDate = new Date(tx.tanggal);
+      // Replace space with T to guarantee standard parsing across all browsers
+      const cleanDateStr = tx.tanggal.includes(" ") ? tx.tanggal.replace(" ", "T") : tx.tanggal;
+      const txDate = new Date(cleanDateStr);
+      
       if (filterVal === "today") {
-        return txDate.toDateString() === now.toDateString();
+        // Strict local date comparison (ignores timezone offsets)
+        return txDate.getDate() === now.getDate() &&
+               txDate.getMonth() === now.getMonth() &&
+               txDate.getFullYear() === now.getFullYear();
       } else if (filterVal === "week") {
         const weekAgo = new Date();
         weekAgo.setDate(now.getDate() - 7);
+        weekAgo.setHours(0,0,0,0);
         return txDate >= weekAgo && txDate <= now;
       } else if (filterVal === "month") {
         return txDate.getMonth() === now.getMonth() && txDate.getFullYear() === now.getFullYear();

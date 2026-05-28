@@ -47,14 +47,20 @@ document.addEventListener("DOMContentLoaded", async function () {
   }
 
   function isDateMatch(dateStr, filterVal) {
-    const itemDate = new Date(dateStr);
+    // Replace space with T to guarantee standard parsing across all browsers
+    const cleanDateStr = dateStr.includes(" ") ? dateStr.replace(" ", "T") : dateStr;
+    const itemDate = new Date(cleanDateStr);
     const now = new Date();
     
     if (filterVal === "today") {
-      return itemDate.toDateString() === now.toDateString();
+      // Strict local date comparison (ignores timezone offsets)
+      return itemDate.getDate() === now.getDate() &&
+             itemDate.getMonth() === now.getMonth() &&
+             itemDate.getFullYear() === now.getFullYear();
     } else if (filterVal === "week") {
       const weekAgo = new Date();
       weekAgo.setDate(now.getDate() - 7);
+      weekAgo.setHours(0,0,0,0);
       return itemDate >= weekAgo && itemDate <= now;
     } else if (filterVal === "month") {
       return itemDate.getMonth() === now.getMonth() && itemDate.getFullYear() === now.getFullYear();
@@ -167,10 +173,8 @@ document.addEventListener("DOMContentLoaded", async function () {
         const pemasukanColVal = item.tipe === 'Pemasukan' ? `+ ${formatRupiah(item.nominal)}` : '-';
         const pengeluaranColVal = item.tipe === 'Pengeluaran' ? `- ${formatRupiah(item.nominal)}` : '-';
 
-        // Clickable Invoice No for detailed modal
-        const refLinkHtml = item.tipe === 'Pemasukan' 
-          ? `<a href="#" onclick="showTxDetail('${item.id}'); return false;" style="color: #3182ce; text-decoration: underline; font-weight: 600; font-family: monospace;">${item.id}</a>`
-          : `<span style="font-family: monospace; font-weight: 600;">${item.id}</span>`;
+        // Plain Invoice No (no modal in Laporan Keuangan)
+        const refLinkHtml = `<span style="font-family: monospace; font-weight: 600;">${item.id}</span>`;
 
         tr.innerHTML = `
           <td style="text-align: center;">${index + 1}</td>
@@ -228,6 +232,96 @@ document.addEventListener("DOMContentLoaded", async function () {
       labaBersihEl.style.color = "var(--danger)";
     } else {
       labaBersihEl.style.color = "var(--success)";
+    }
+
+    // Hitung total pengeluaran per kategori untuk Laporan Arus Kas Akuntansi
+    let listrikNominal = 0;
+    let gajiNominal = 0;
+    let sewaNominal = 0;
+    let kebersihanNominal = 0;
+    let lainNominal = 0;
+
+    filteredExps.forEach(ex => {
+      if (ex.kategori === 'Listrik & Air') listrikNominal += ex.nominal;
+      else if (ex.kategori === 'Gaji Karyawan') gajiNominal += ex.nominal;
+      else if (ex.kategori === 'Sewa Tempat') sewaNominal += ex.nominal;
+      else if (ex.kategori === 'Kebersihan') kebersihanNominal += ex.nominal;
+      else lainNominal += ex.nominal;
+    });
+
+    const saldoAkhir = totalPendapatan - totalPengeluaran;
+
+    // Render print-only professional Income Statement (Laporan Laba Rugi)
+    const printCashFlowEl = document.getElementById("printCashFlowReport");
+    if (printCashFlowEl) {
+      const totalHPP = totalPendapatan - totalLabaKotor;
+      
+      printCashFlowEl.innerHTML = `
+        <div style="font-family: 'Courier New', Courier, monospace; font-size: 14px; line-height: 1.6; color: #000; margin: 0 auto; max-width: 650px;">
+          <div style="border-top: 2px solid #000; border-bottom: 2px solid #000; padding: 5px 0; margin-bottom: 20px; font-weight: bold; font-size: 15px; text-transform: uppercase; letter-spacing: 1px; text-align: center;">
+            LAPORAN LABA RUGI (INCOME STATEMENT)
+          </div>
+
+          <!-- Bagian Pendapatan & HPP -->
+          <div style="display: flex; justify-content: space-between; font-weight: bold; margin-bottom: 4px;">
+            <span>Pendapatan Penjualan (Omset)</span>
+            <span>${formatRupiah(totalPendapatan)}</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; padding-left: 20px; margin-bottom: 4px; color: #333;">
+            <span>Dikurangi: Harga Pokok Penjualan (HPP)</span>
+            <span>(${formatRupiah(totalHPP)})</span>
+          </div>
+          
+          <div style="border-bottom: 1px solid #000; margin: 8px 0;"></div>
+          <div style="display: flex; justify-content: space-between; font-weight: bold; margin-bottom: 25px; font-size: 14px;">
+            <span>LABA KOTOR (GROSS PROFIT)</span>
+            <span>${formatRupiah(totalLabaKotor)}</span>
+          </div>
+
+          <!-- Bagian Beban Operasional -->
+          <div style="font-weight: bold; margin-bottom: 8px;">Beban Operasional (Beban Kas Keluar):</div>
+          <div style="display: flex; justify-content: space-between; padding-left: 20px; margin-bottom: 4px;">
+            <span>Beban Listrik & Air</span>
+            <span>${listrikNominal > 0 ? `(${formatRupiah(listrikNominal)})` : 'Rp 0'}</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; padding-left: 20px; margin-bottom: 4px;">
+            <span>Beban Gaji Karyawan</span>
+            <span>${gajiNominal > 0 ? `(${formatRupiah(gajiNominal)})` : 'Rp 0'}</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; padding-left: 20px; margin-bottom: 4px;">
+            <span>Beban Sewa Tempat Toko</span>
+            <span>${sewaNominal > 0 ? `(${formatRupiah(sewaNominal)})` : 'Rp 0'}</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; padding-left: 20px; margin-bottom: 4px;">
+            <span>Beban Kebersihan & Keamanan</span>
+            <span>${kebersihanNominal > 0 ? `(${formatRupiah(kebersihanNominal)})` : 'Rp 0'}</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; padding-left: 20px; margin-bottom: 4px;">
+            <span>Beban Operasional Lainnya</span>
+            <span>${lainNominal > 0 ? `(${formatRupiah(lainNominal)})` : 'Rp 0'}</span>
+          </div>
+
+          <div style="border-bottom: 1px solid #000; margin: 8px 0;"></div>
+          <div style="display: flex; justify-content: space-between; font-weight: bold; padding-left: 20px; margin-bottom: 25px;">
+            <span>Total Beban Operasional (B)</span>
+            <span>(${formatRupiah(totalPengeluaran)})</span>
+          </div>
+
+          <!-- Hasil Akhir Laba Bersih -->
+          <div style="border-top: 2px double #000; border-bottom: 2px double #000; padding: 8px 0; font-weight: bold; font-size: 15px; display: flex; justify-content: space-between;">
+            <span>LABA BERSIH (NET PROFIT)</span>
+            <span style="color: #000;">${labaBersih >= 0 ? formatRupiah(labaBersih) : `(${formatRupiah(Math.abs(labaBersih))})`}</span>
+          </div>
+          
+          <div style="margin-top: 50px; display: flex; justify-content: flex-end; font-size: 12px; font-family: sans-serif;">
+            <div style="text-align: center; width: 200px;">
+              <div>Jakarta, ${new Date().toLocaleDateString("id-ID", { day: '2-digit', month: 'long', year: 'numeric' })}</div>
+              <div style="margin-top: 60px; font-weight: bold; text-decoration: underline;">${profile.nama || 'Optik Lucky Prastica'}</div>
+              <div style="color: #718096; font-size: 11px;">Manajemen Toko</div>
+            </div>
+          </div>
+        </div>
+      `;
     }
 
     document.getElementById("expenseInfo").textContent = `Menampilkan ${ledger.length} catatan keuangan`;
