@@ -30,13 +30,26 @@ if ($resSelect && mysqli_num_rows($resSelect) > 0) {
     }
 
     $total = (float)$row['total_belanja'];
+    
+    // Ambil data pembayaran pelunasan dari input JSON jika tersedia
+    $metode = isset($data['metode_pembayaran']) ? mysqli_real_escape_string($conn, $data['metode_pembayaran']) : '';
+    $uang_diterima = isset($data['uang_diterima']) ? (float)$data['uang_diterima'] : $total;
+    $kembalian = isset($data['kembalian']) ? (float)$data['kembalian'] : 0.00;
+
+    $old_method = $row['metode_pembayaran'] ?? '-';
+    if (!empty($metode) && $metode !== '-') {
+        $new_method = "$old_method / $metode (Lunas)";
+    } else {
+        $new_method = "$old_method (Lunas)";
+    }
 
     // Update status transaksi menjadi 'Sudah Diambil' dan uang_muka disamakan dengan total (sisa tagihan menjadi 0)
     $qUpdate = "UPDATE transaksi SET 
                 status_pesanan = 'Sudah Diambil', 
                 uang_muka = $total,
-                uang_diterima = $total,
-                kembalian = 0.00
+                metode_pembayaran = '$new_method',
+                uang_diterima = $uang_diterima,
+                kembalian = $kembalian
                 WHERE id_transaksi = '$id_transaksi'";
                 
     if (mysqli_query($conn, $qUpdate)) {

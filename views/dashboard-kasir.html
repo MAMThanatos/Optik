@@ -109,6 +109,109 @@
     </main>
   </div>
 
+  <!-- Pelunasan Modal -->
+  <div class="modal-overlay" id="pelunasanModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2>💸 Pelunasan Tagihan DP</h2>
+        <button class="modal-close" id="btnClosePelunasanModal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <!-- Invoice Info -->
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px; margin-bottom: 16px; font-size: 13px;">
+          <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+            <span style="font-weight:600; color:#64748b;">No. Invoice:</span>
+            <span id="pModalInvoice" style="font-family:monospace; font-weight:700; color:#1e293b;">-</span>
+          </div>
+          <div style="display:flex; justify-content:space-between;">
+            <span style="font-weight:600; color:#64748b;">Pelanggan:</span>
+            <span id="pModalPelanggan" style="font-weight:600; color:#1e293b;">-</span>
+          </div>
+        </div>
+
+        <!-- Financial Summary -->
+        <div class="payment-summary" style="margin-bottom: 20px;">
+          <div style="display:flex; justify-content:space-between; font-size:13px; margin-bottom:6px; color:rgba(255,255,255,0.8);">
+            <span>Total Belanja:</span>
+            <span id="pModalTotal">Rp 0</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:13px; margin-bottom:10px; color:rgba(255,255,255,0.8); border-bottom:1px dashed rgba(255,255,255,0.2); padding-bottom:8px;">
+            <span>Uang Muka (DP):</span>
+            <span id="pModalDP">Rp 0</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span style="font-size:13px; font-weight:700; color:#fff;">SISA TAGIHAN:</span>
+            <span id="pModalSisa" style="font-size:26px; font-weight:800; color:#81e6d9;">Rp 0</span>
+          </div>
+        </div>
+
+        <!-- Payment Methods Selection -->
+        <div class="payment-methods">
+          <h4>Pilih Metode Pembayaran Pelunasan</h4>
+          <div class="method-grid">
+            <button class="method-btn selected" data-pm="tunai" id="pMethodTunai">
+              <span class="method-icon">💵</span>
+              <span class="method-name">Tunai</span>
+            </button>
+            <button class="method-btn" data-pm="transfer" id="pMethodTransfer">
+              <span class="method-icon">🏦</span>
+              <span class="method-name">Transfer Bank</span>
+            </button>
+            <button class="method-btn" data-pm="qris" id="pMethodQris">
+              <span class="method-icon">📱</span>
+              <span class="method-name">QRIS</span>
+            </button>
+            <button class="method-btn" data-pm="kartu" id="pMethodKartu">
+              <span class="method-icon">💳</span>
+              <span class="method-name">Kartu</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Tunai Section -->
+        <div class="tunai-section" id="pTunaiSection">
+          <label>Jumlah Uang Diterima</label>
+          <input type="number" id="pCashInput" placeholder="Masukkan jumlah uang..." />
+          <div class="kembalian-row" id="pKembalianRow" style="display:none;">
+            <span>Kembalian:</span>
+            <span id="pKembalianAmount" class="kembalian-value">Rp 0</span>
+          </div>
+        </div>
+
+        <!-- Transfer Section -->
+        <div class="transfer-section" id="pTransferSection" style="display:none;">
+          <label>Pilih Bank</label>
+          <div class="bank-options">
+            <button class="bank-btn" data-pbank="BCA">🏦 BCA</button>
+            <button class="bank-btn" data-pbank="Mandiri">🏦 Mandiri</button>
+            <button class="bank-btn" data-pbank="BNI">🏦 BNI</button>
+            <button class="bank-btn" data-pbank="BRI">🏦 BRI</button>
+          </div>
+        </div>
+
+        <!-- QRIS Section -->
+        <div class="qris-section" id="pQrisSection" style="display:none; text-align:center;">
+          <span>📱</span>
+          <p>QR Code Toko</p>
+          <small>Scan untuk melunasi sisa tagihan</small>
+        </div>
+
+        <!-- Kartu Section -->
+        <div class="kartu-section" id="pKartuSection" style="display:none; text-align:center;">
+          <span>💳</span>
+          <p>Gunakan Mesin EDC</p>
+          <small>Gesek/tempel kartu debit atau kredit</small>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-cancel" id="btnCancelPelunasanModal">Batal</button>
+        <button class="btn-confirm-pay" id="btnConfirmPelunasan" disabled>
+          ✅ Konfirmasi & Cetak Struk
+        </button>
+      </div>
+    </div>
+  </div>
+
   <script src="../config/config.js"></script>
   <script src="../assets/js/app.js?v=5"></script>
 </body>
