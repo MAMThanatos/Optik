@@ -378,7 +378,7 @@ window.lunasinDP = async function(txId, total) {
         // Set state variables
         activePelunasanTxId = tx.id;
         activePelunasanTotal = parseFloat(tx.total);
-        activePelunasanDP = parseFloat(tx.uang_muka);
+        activePelunasanDP = parseFloat(tx.uangMuka);
         activePelunasanSisa = activePelunasanTotal - activePelunasanDP;
 
         // Update modal info
