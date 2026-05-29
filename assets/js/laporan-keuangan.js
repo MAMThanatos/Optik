@@ -555,6 +555,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
   document.getElementById("btnTambahPengeluaran").addEventListener("click", () => {
     form.reset();
+    document.getElementById("expDate").value = new Date().toISOString().split("T")[0];
     modal.classList.add("show");
   });
 
@@ -576,9 +577,12 @@ document.addEventListener("DOMContentLoaded", async function () {
     btn.disabled = true;
     btn.textContent = "Menyimpan...";
 
+    const selectedDate = document.getElementById("expDate").value;
+    const expenseDate = selectedDate ? new Date(selectedDate).toISOString() : new Date().toISOString();
+
     const newExpense = {
       id: "EXP-" + Date.now(),
-      tanggal: new Date().toISOString(),
+      tanggal: expenseDate,
       kategori: document.getElementById("expCategory").value,
       nominal: parseInt(document.getElementById("expNominal").value),
       keterangan: document.getElementById("expDesc").value,
