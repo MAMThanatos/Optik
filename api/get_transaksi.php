@@ -20,6 +20,8 @@ $qTx = "
         t.pd, t.addisi,
         t.status_pesanan as statusPesanan,
         t.uang_muka as uangMuka,
+        t.nominal_dp as nominal_dp,
+        t.tanggal_pelunasan as tanggal_pelunasan,
         (t.total_belanja - t.uang_muka) as sisaTagihan,
         t.subtotal, t.diskon as diskonNominal, t.total_belanja as total,
         t.metode_pembayaran as metodePembayaran,
@@ -39,6 +41,7 @@ if($resTx) {
         $row['subtotal'] = (float)$row['subtotal'];
         $row['diskonNominal'] = (float)$row['diskonNominal'];
         $row['uangMuka'] = (float)$row['uangMuka'];
+        $row['nominal_dp'] = (float)($row['nominal_dp'] ?? 0);
         $row['sisaTagihan'] = (float)$row['sisaTagihan'];
         $row['uangDiterima'] = (float)$row['uangDiterima'];
         $row['kembalian'] = (float)$row['kembalian'];

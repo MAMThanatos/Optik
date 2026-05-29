@@ -91,16 +91,12 @@ document.addEventListener("DOMContentLoaded", async function () {
       }
     }
 
-    let filteredTxs = transactions.filter(tx => isDateMatch(tx.tanggal, filterVal));
-    
     let totalPendapatan = 0;
     let totalLabaKotor = 0;
     let ledger = [];
 
-    filteredTxs.forEach(tx => {
-      totalPendapatan += tx.total;
-      
-      // Hitung HPP (Harga Pokok Penjualan)
+    transactions.forEach(tx => {
+      // Hitung HPP (Harga Pokok Penjualan) untuk hitung Laba Kotor proporsional
       let hpp = 0;
       if (tx.items && tx.items.length > 0) {
         tx.items.forEach(item => {
@@ -110,20 +106,79 @@ document.addEventListener("DOMContentLoaded", async function () {
       } else {
         hpp = tx.total * 0.6;
       }
-      
-      totalLabaKotor += (tx.total - hpp); 
+      const profitMarginRatio = tx.total > 0 ? (tx.total - hpp) / tx.total : 0.4;
 
-      // Tambahkan Pemasukan ke ledger
-      ledger.push({
-        tanggal: tx.tanggal,
-        id: tx.id,
-        tipe: 'Pemasukan',
-        kategori: 'Penjualan',
-        keterangan: tx.pelanggan ? `Penjualan kacamata ke ${tx.pelanggan}` : 'Penjualan Kacamata',
-        operator: tx.kasirNama || '-',
-        nominal: tx.total,
-        bisaDihapus: false
-      });
+      // Kasus 1: Transaksi DP yang SUDAH LUNAS (status 'Sudah Diambil' dan nominal_dp > 0)
+      if (tx.statusPesanan === 'Sudah Diambil' && tx.nominal_dp > 0) {
+        // Event 1: Pembayaran DP pada tanggal_waktu
+        if (isDateMatch(tx.tanggal, filterVal)) {
+          const dpAmt = tx.nominal_dp;
+          totalPendapatan += dpAmt;
+          totalLabaKotor += (dpAmt * profitMarginRatio);
+          ledger.push({
+            tanggal: tx.tanggal,
+            id: tx.id + "-DP",
+            tipe: 'Pemasukan',
+            kategori: 'Penjualan (DP)',
+            keterangan: tx.pelanggan ? `Pembayaran Uang Muka (DP) kacamata ke ${tx.pelanggan}` : 'Penjualan Kacamata (DP)',
+            operator: tx.kasirNama || '-',
+            nominal: dpAmt,
+            bisaDihapus: false
+          });
+        }
+
+        // Event 2: Pembayaran Pelunasan pada tanggal_pelunasan
+        if (tx.tanggal_pelunasan && isDateMatch(tx.tanggal_pelunasan, filterVal)) {
+          const pelunasanAmt = tx.total - tx.nominal_dp;
+          totalPendapatan += pelunasanAmt;
+          totalLabaKotor += (pelunasanAmt * profitMarginRatio);
+          ledger.push({
+            tanggal: tx.tanggal_pelunasan,
+            id: tx.id + "-LUNAS",
+            tipe: 'Pemasukan',
+            kategori: 'Penjualan (Pelunasan)',
+            keterangan: tx.pelanggan ? `Pelunasan sisa tagihan kacamata ke ${tx.pelanggan}` : 'Penjualan Kacamata (Pelunasan)',
+            operator: tx.kasirNama || '-',
+            nominal: pelunasanAmt,
+            bisaDihapus: false
+          });
+        }
+      }
+      // Kasus 2: Transaksi DP yang MASIH PENDING / PROSES (status 'Diproses')
+      else if (tx.statusPesanan === 'Diproses') {
+        if (isDateMatch(tx.tanggal, filterVal)) {
+          const dpAmt = tx.uangMuka;
+          totalPendapatan += dpAmt;
+          totalLabaKotor += (dpAmt * profitMarginRatio);
+          ledger.push({
+            tanggal: tx.tanggal,
+            id: tx.id + "-DP",
+            tipe: 'Pemasukan',
+            kategori: 'Penjualan (DP)',
+            keterangan: tx.pelanggan ? `Pembayaran Uang Muka (DP) kacamata ke ${tx.pelanggan}` : 'Penjualan Kacamata (DP)',
+            operator: tx.kasirNama || '-',
+            nominal: dpAmt,
+            bisaDihapus: false
+          });
+        }
+      }
+      // Kasus 3: Transaksi Lunas Biasa (Tanpa DP)
+      else {
+        if (isDateMatch(tx.tanggal, filterVal)) {
+          totalPendapatan += tx.total;
+          totalLabaKotor += (tx.total - hpp);
+          ledger.push({
+            tanggal: tx.tanggal,
+            id: tx.id,
+            tipe: 'Pemasukan',
+            kategori: 'Penjualan',
+            keterangan: tx.pelanggan ? `Penjualan kacamata ke ${tx.pelanggan}` : 'Penjualan Kacamata',
+            operator: tx.kasirNama || '-',
+            nominal: tx.total,
+            bisaDihapus: false
+          });
+        }
+      }
     });
 
     let filteredExps = expenses.filter(ex => isDateMatch(ex.tanggal, filterVal));
@@ -173,8 +228,14 @@ document.addEventListener("DOMContentLoaded", async function () {
         const pemasukanColVal = item.tipe === 'Pemasukan' ? `+ ${formatRupiah(item.nominal)}` : '-';
         const pengeluaranColVal = item.tipe === 'Pengeluaran' ? `- ${formatRupiah(item.nominal)}` : '-';
 
-        // Plain Invoice No (no modal in Laporan Keuangan)
-        const refLinkHtml = `<span style="font-family: monospace; font-weight: 600;">${item.id}</span>`;
+        // Bersihkan ID Invoice jika terpecah, dan buat tautan klik struk detail
+        const cleanId = item.id.replace("-DP", "").replace("-LUNAS", "");
+        let refLinkHtml = "";
+        if (item.tipe === 'Pemasukan' && item.kategori.startsWith('Penjualan')) {
+          refLinkHtml = `<a href="javascript:void(0)" onclick="window.showTxDetail('${cleanId}')" style="font-family: monospace; font-weight: 600; color: #2b6cb0; text-decoration: underline; transition: color 0.2s;" onmouseover="this.style.color='#1a365d'" onmouseout="this.style.color='#2b6cb0'">${cleanId}</a>`;
+        } else {
+          refLinkHtml = `<span style="font-family: monospace; font-weight: 600;">${item.id}</span>`;
+        }
 
         tr.innerHTML = `
           <td style="text-align: center;">${index + 1}</td>

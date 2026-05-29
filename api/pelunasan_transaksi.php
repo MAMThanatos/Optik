@@ -43,10 +43,12 @@ if ($resSelect && mysqli_num_rows($resSelect) > 0) {
         $new_method = "$old_method (Lunas)";
     }
 
-    // Update status transaksi menjadi 'Sudah Diambil' dan uang_muka disamakan dengan total (sisa tagihan menjadi 0)
+    // Update status transaksi menjadi 'Sudah Diambil', nominal_dp diisi dengan uang_muka yang lama, uang_muka disamakan dengan total, dan tanggal_pelunasan diisi NOW()
     $qUpdate = "UPDATE transaksi SET 
                 status_pesanan = 'Sudah Diambil', 
+                nominal_dp = uang_muka,
                 uang_muka = $total,
+                tanggal_pelunasan = NOW(),
                 metode_pembayaran = '$new_method',
                 uang_diterima = $uang_diterima,
                 kembalian = $kembalian

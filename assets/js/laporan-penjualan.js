@@ -38,13 +38,82 @@ document.addEventListener("DOMContentLoaded", async function () {
     const searchVal = searchInput.value.toLowerCase();
     const now = new Date();
     
-    let filteredTxs = transactions.filter(tx => {
-      // Replace space with T to guarantee standard parsing across all browsers
-      const cleanDateStr = tx.tanggal.includes(" ") ? tx.tanggal.replace(" ", "T") : tx.tanggal;
+    let salesEvents = [];
+
+    transactions.forEach(tx => {
+      // Kasus 1: Transaksi DP yang Sudah Lunas
+      if (tx.statusPesanan === 'Sudah Diambil' && tx.nominal_dp > 0) {
+        // Event 1: DP paid on tx.tanggal
+        const dpAmt = tx.nominal_dp;
+        let metodeDP = tx.metodePembayaran;
+        if (tx.metodePembayaran.includes(" / ")) {
+          metodeDP = tx.metodePembayaran.split(" / ")[0];
+        }
+        salesEvents.push({
+          tanggal: tx.tanggal,
+          id: tx.id + "-DP",
+          baseId: tx.id,
+          kasirNama: tx.kasirNama,
+          items: tx.items,
+          metode: metodeDP,
+          nominal: dpAmt,
+          tipe: "DP"
+        });
+
+        // Event 2: Pelunasan paid on tx.tanggal_pelunasan
+        if (tx.tanggal_pelunasan) {
+          const pelunasanAmt = tx.total - tx.nominal_dp;
+          let metodeLunas = tx.metodePembayaran;
+          if (tx.metodePembayaran.includes(" / ")) {
+            metodeLunas = tx.metodePembayaran.split(" / ")[1].replace(" (Lunas)", "");
+          }
+          salesEvents.push({
+            tanggal: tx.tanggal_pelunasan,
+            id: tx.id + "-LUNAS",
+            baseId: tx.id,
+            kasirNama: tx.kasirNama,
+            items: tx.items,
+            metode: metodeLunas,
+            nominal: pelunasanAmt,
+            tipe: "Pelunasan"
+          });
+        }
+      }
+      // Kasus 2: Transaksi DP yang Masih Diproses (Belum Lunas)
+      else if (tx.statusPesanan === 'Diproses') {
+        const dpAmt = tx.uangMuka;
+        salesEvents.push({
+          tanggal: tx.tanggal,
+          id: tx.id + "-DP",
+          baseId: tx.id,
+          kasirNama: tx.kasirNama,
+          items: tx.items,
+          metode: tx.metodePembayaran,
+          nominal: dpAmt,
+          tipe: "DP"
+        });
+      }
+      // Kasus 3: Transaksi Lunas Biasa (Tanpa DP)
+      else {
+        salesEvents.push({
+          tanggal: tx.tanggal,
+          id: tx.id,
+          baseId: tx.id,
+          kasirNama: tx.kasirNama,
+          items: tx.items,
+          metode: tx.metodePembayaran,
+          nominal: tx.total,
+          tipe: "Lunas"
+        });
+      }
+    });
+
+    // Filter berdasarkan Periode Waktu
+    let filteredEvents = salesEvents.filter(ev => {
+      const cleanDateStr = ev.tanggal.includes(" ") ? ev.tanggal.replace(" ", "T") : ev.tanggal;
       const txDate = new Date(cleanDateStr);
       
       if (filterVal === "today") {
-        // Strict local date comparison (ignores timezone offsets)
         return txDate.getDate() === now.getDate() &&
                txDate.getMonth() === now.getMonth() &&
                txDate.getFullYear() === now.getFullYear();
@@ -59,38 +128,47 @@ document.addEventListener("DOMContentLoaded", async function () {
       return true;
     });
 
+    // Filter berdasarkan kolom pencarian
     if (searchVal) {
-      filteredTxs = filteredTxs.filter(tx => 
-        tx.id.toLowerCase().includes(searchVal) || 
-        tx.kasirNama.toLowerCase().includes(searchVal)
+      filteredEvents = filteredEvents.filter(ev => 
+        ev.baseId.toLowerCase().includes(searchVal) || 
+        ev.kasirNama.toLowerCase().includes(searchVal)
       );
     }
 
-    filteredTxs.sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal));
+    // Urutkan berdasarkan tanggal terbaru
+    filteredEvents.sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal));
 
     let totalPendapatan = 0;
     let totalItem = 0;
     
     tbody.innerHTML = "";
 
-    if (filteredTxs.length === 0) {
+    if (filteredEvents.length === 0) {
       tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:20px;color:#6b7280;">Tidak ada data transaksi</td></tr>`;
     } else {
-      filteredTxs.forEach(tx => {
-        totalPendapatan += tx.total;
+      filteredEvents.forEach(ev => {
+        totalPendapatan += ev.nominal;
         
         let itemHtml = "";
-        let txItemsCount = 0;
-        
-        tx.items.forEach(item => {
-          totalItem += item.qty;
-          txItemsCount += item.qty;
+        ev.items.forEach(item => {
+          // Hanya hitung Qty item pada fase DP/Lunas biasa agar tidak dobel hitung saat fase Pelunasan
+          if (ev.tipe !== "Pelunasan") {
+            totalItem += item.qty;
+          }
           itemHtml += `<div>${item.qty}x ${item.nama}</div>`;
         });
 
-        const dateObj = new Date(tx.tanggal);
+        const dateObj = new Date(ev.tanggal);
         const dateStr = dateObj.toLocaleDateString("id-ID", { day:"2-digit", month:"short", year:"numeric" });
         const timeStr = dateObj.toLocaleTimeString("id-ID", { hour:"2-digit", minute:"2-digit" });
+
+        // Labelling type bayar (DP / Lunas)
+        const typeLabel = ev.tipe === "DP" 
+          ? ' <span style="background:#fff3cd; color:#856404; font-size:10px; padding:2px 6px; border-radius:4px; margin-left:4px; font-weight:bold; vertical-align:middle;">DP</span>' 
+          : (ev.tipe === "Pelunasan" 
+            ? ' <span style="background:#e6fffa; color:#319795; font-size:10px; padding:2px 6px; border-radius:4px; margin-left:4px; font-weight:bold; vertical-align:middle;">PELUNASAN</span>'
+            : '');
 
         const tr = document.createElement("tr");
         tr.innerHTML = `
@@ -99,21 +177,21 @@ document.addEventListener("DOMContentLoaded", async function () {
             <div style="font-size:0.85rem;color:var(--text-muted);">${timeStr}</div>
           </td>
           <td style="font-family:monospace;font-weight:600;">
-            <a href="#" onclick="showTxDetail('${tx.id}'); return false;" style="color:var(--accent); text-decoration:underline; font-weight:700;">${tx.id}</a>
+            <a href="#" onclick="showTxDetail('${ev.baseId}'); return false;" style="color:var(--accent); text-decoration:underline; font-weight:700;">${ev.baseId}</a>${typeLabel}
           </td>
-          <td>${tx.kasirNama}</td>
+          <td>${ev.kasirNama}</td>
           <td><div class="item-list">${itemHtml}</div></td>
-          <td><span class="method-badge">${tx.metodePembayaran}</span></td>
-          <td style="font-weight:700;">${formatRupiah(tx.total)}</td>
+          <td><span class="method-badge">${ev.metode}</span></td>
+          <td style="font-weight:700; color: ${ev.tipe === 'Pelunasan' ? '#319795' : 'inherit'};">${formatRupiah(ev.nominal)}</td>
         `;
         tbody.appendChild(tr);
       });
     }
 
     document.getElementById("totPendapatan").textContent = formatRupiah(totalPendapatan);
-    document.getElementById("totTransaksi").textContent = filteredTxs.length.toLocaleString("id-ID");
+    document.getElementById("totTransaksi").textContent = filteredEvents.length.toLocaleString("id-ID");
     document.getElementById("totItemTerjual").textContent = totalItem.toLocaleString("id-ID");
-    document.getElementById("salesInfo").textContent = `Menampilkan ${filteredTxs.length} transaksi`;
+    document.getElementById("salesInfo").textContent = `Menampilkan ${filteredEvents.length} transaksi`;
   }
 
   // ----------------------------------------------------
