@@ -180,109 +180,107 @@
           <button class="btn-pay" id="btnPay" disabled>
             💳 Bayar Sekarang
           </button>
-        </div>
-      </div>
-
-      <!-- Payment Modal -->
-      <div class="modal-overlay" id="paymentModal">
-        <div class="modal-card">
-          <div class="modal-header">
-            <h2>💳 Pembayaran</h2>
-            <button class="modal-close" id="btnClosePayment">&times;</button>
-          </div>
-          <div class="modal-body">
-            <div class="payment-summary">
-              <div class="payment-total-label">Total yang harus dibayar</div>
-              <div class="payment-total-value" id="paymentTotal">Rp 0</div>
-            </div>
-
-            <!-- DP / Lunas Selection -->
-            <div class="payment-type-section" style="margin: 15px 0; padding: 15px; background: #e2e8f0; border-radius: 8px;">
-              <h4 style="margin-top:0; margin-bottom:10px;">Status Pembayaran</h4>
-              <div style="display: flex; gap: 15px;">
-                <label style="cursor:pointer;"><input type="radio" name="payStatus" value="lunas" checked> Lunas</label>
-                <label style="cursor:pointer;"><input type="radio" name="payStatus" value="dp"> Uang Muka (DP)</label>
-              </div>
-              
-              <div id="dpInputSection" style="display:none; margin-top:10px;">
-                <label style="display:block; margin-bottom:5px; font-size:13px;">Nominal DP</label>
-                <input type="number" id="dpAmount" placeholder="Masukkan nominal DP..." style="width:100%; padding:10px; border:1px solid #cbd5e0; border-radius:6px; font-size:16px;" />
-              </div>
-              
-              <div id="sisaTagihanRow" style="display:none; margin-top:10px; font-weight:bold; color:#e53e3e; justify-content: space-between;">
-                <span>Sisa Tagihan:</span> <span id="sisaTagihanAmount">Rp 0</span>
-              </div>
-            </div>
-
-            <div class="payment-methods">
-              <h4>Pilih Metode Pembayaran</h4>
-              <div class="method-grid" id="methodGrid">
-                <!-- Methods rendered by JS -->
-              </div>
-            </div>
-
-            <!-- Tunai Section -->
-            <div class="tunai-section" id="tunaiSection" style="display:none;">
-              <label>Jumlah Uang Diterima</label>
-              <input type="number" id="cashInput" placeholder="Masukkan jumlah uang..." />
-              <div class="kembalian-row" id="kembalianRow" style="display:none;">
-                <span>Kembalian:</span>
-                <span id="kembalianAmount" class="kembalian-value">Rp 0</span>
-              </div>
-            </div>
-
-            <!-- Transfer Section -->
-            <div class="transfer-section" id="transferSection" style="display:none;">
-              <label>Pilih Bank</label>
-              <div class="bank-options">
-                <button class="bank-btn" data-bank="BCA">🏦 BCA</button>
-                <button class="bank-btn" data-bank="Mandiri">🏦 Mandiri</button>
-                <button class="bank-btn" data-bank="BNI">🏦 BNI</button>
-                <button class="bank-btn" data-bank="BRI">🏦 BRI</button>
-              </div>
-            </div>
-
-            <!-- QRIS Section -->
-            <div class="qris-section" id="qrisSection" style="display:none;">
-              <div class="qris-placeholder">
-                <div class="qris-box">
-                  <span>📱</span>
-                  <p>QR Code akan ditampilkan di sini</p>
-                  <small>Scan menggunakan aplikasi e-wallet</small>
-                </div>
-              </div>
-            </div>
-
-            <!-- Kartu Section -->
-            <div class="kartu-section" id="kartuSection" style="display:none;">
-              <div class="kartu-placeholder">
-                <span>💳</span>
-                <p>Silakan tempelkan atau gesek kartu pada mesin EDC</p>
-              </div>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button class="btn-cancel" id="btnCancelPay">Batal</button>
-            <button class="btn-confirm-pay" id="btnConfirmPay" disabled>
-              ✅ Konfirmasi Pembayaran
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Receipt Modal -->
-      <div class="modal-overlay" id="receiptModal">
-        <div class="modal-card receipt-card">
-          <div class="receipt-content" id="receiptContent">
-            <!-- Receipt rendered by JS -->
-          </div>
-          <div class="receipt-actions">
-            <button class="btn-print" id="btnPrint">🖨️ Cetak Struk</button>
-            <button class="btn-new-transaction" id="btnNewTransaction">🛒 Transaksi Baru</button>
-          </div>
-        </div>
-      </div>
     </main>
+  </div>
+
+  <!-- Payment Modal (Root Level) -->
+  <div class="modal-overlay" id="paymentModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2>💳 Pembayaran</h2>
+        <button class="modal-close" id="btnClosePayment">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="payment-summary">
+          <div class="payment-total-label">Total yang harus dibayar</div>
+          <div class="payment-total-value" id="paymentTotal">Rp 0</div>
+        </div>
+
+        <!-- DP / Lunas Selection -->
+        <div class="payment-type-section" style="margin: 15px 0; padding: 15px; background: #e2e8f0; border-radius: 8px;">
+          <h4 style="margin-top:0; margin-bottom:10px;">Status Pembayaran</h4>
+          <div style="display: flex; gap: 15px;">
+            <label style="cursor:pointer;"><input type="radio" name="payStatus" value="lunas" checked> Lunas</label>
+            <label style="cursor:pointer;"><input type="radio" name="payStatus" value="dp"> Uang Muka (DP)</label>
+          </div>
+          
+          <div id="dpInputSection" style="display:none; margin-top:10px;">
+            <label style="display:block; margin-bottom:5px; font-size:13px;">Nominal DP</label>
+            <input type="number" id="dpAmount" placeholder="Masukkan nominal DP..." style="width:100%; padding:10px; border:1px solid #cbd5e0; border-radius:6px; font-size:16px;" />
+          </div>
+          
+          <div id="sisaTagihanRow" style="display:none; margin-top:10px; font-weight:bold; color:#e53e3e; justify-content: space-between;">
+            <span>Sisa Tagihan:</span> <span id="sisaTagihanAmount">Rp 0</span>
+          </div>
+        </div>
+
+        <div class="payment-methods">
+          <h4>Pilih Metode Pembayaran</h4>
+          <div class="method-grid" id="methodGrid">
+            <!-- Methods rendered by JS -->
+          </div>
+        </div>
+
+        <!-- Tunai Section -->
+        <div class="tunai-section" id="tunaiSection" style="display:none;">
+          <label>Jumlah Uang Diterima</label>
+          <input type="number" id="cashInput" placeholder="Masukkan jumlah uang..." />
+          <div class="kembalian-row" id="kembalianRow" style="display:none;">
+            <span>Kembalian:</span>
+            <span id="kembalianAmount" class="kembalian-value">Rp 0</span>
+          </div>
+        </div>
+
+        <!-- Transfer Section -->
+        <div class="transfer-section" id="transferSection" style="display:none;">
+          <label>Pilih Bank</label>
+          <div class="bank-options">
+            <button class="bank-btn" data-bank="BCA">🏦 BCA</button>
+            <button class="bank-btn" data-bank="Mandiri">🏦 Mandiri</button>
+            <button class="bank-btn" data-bank="BNI">🏦 BNI</button>
+            <button class="bank-btn" data-bank="BRI">🏦 BRI</button>
+          </div>
+        </div>
+
+        <!-- QRIS Section -->
+        <div class="qris-section" id="qrisSection" style="display:none;">
+          <div class="qris-placeholder">
+            <div class="qris-box">
+              <span>📱</span>
+              <p>QR Code akan ditampilkan di sini</p>
+              <small>Scan menggunakan aplikasi e-wallet</small>
+            </div>
+          </div>
+        </div>
+
+        <!-- Kartu Section -->
+        <div class="kartu-section" id="kartuSection" style="display:none;">
+          <div class="kartu-placeholder">
+            <span>💳</span>
+            <p>Silakan tempelkan atau gesek kartu pada mesin EDC</p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-cancel" id="btnCancelPay">Batal</button>
+        <button class="btn-confirm-pay" id="btnConfirmPay" disabled>
+          ✅ Konfirmasi Pembayaran
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Receipt Modal (Root Level) -->
+  <div class="modal-overlay" id="receiptModal">
+    <div class="modal-card receipt-card">
+      <div class="receipt-content" id="receiptContent">
+        <!-- Receipt rendered by JS -->
+      </div>
+      <div class="receipt-actions">
+        <button class="btn-print" id="btnPrint">🖨️ Cetak Struk</button>
+        <button class="btn-new-transaction" id="btnNewTransaction">🛒 Transaksi Baru</button>
+      </div>
+    </div>
   </div>
 
   <script src="../config/config.js"></script>
