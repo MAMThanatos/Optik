@@ -19,10 +19,20 @@ foreach ($queries as $query) {
         if (mysqli_query($conn, $query)) {
             $success_count++;
         } else {
-            $errors[] = mysqli_error($conn);
+            $errno = mysqli_errno($conn);
+            if ($errno !== 1060 && $errno !== 1061) { // 1060 = Duplicate column name
+                $errors[] = mysqli_error($conn) . " (Code: $errno)";
+            } else {
+                $success_count++;
+            }
         }
     } catch (Exception $e) {
-        $errors[] = $e->getMessage();
+        $code = $e->getCode();
+        if ($code !== 1060 && $code !== 1061 && strpos($e->getMessage(), 'Duplicate column') === false) {
+            $errors[] = $e->getMessage();
+        } else {
+            $success_count++;
+        }
     }
 }
 

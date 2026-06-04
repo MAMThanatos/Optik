@@ -18,7 +18,7 @@ if (!$data || empty($data['id_transaksi'])) {
 $id_transaksi = mysqli_real_escape_string($conn, $data['id_transaksi']);
 
 // Ambil data transaksi terlebih dahulu
-$qSelect = "SELECT total_belanja, uang_muka, status_pesanan FROM transaksi WHERE id_transaksi = '$id_transaksi' LIMIT 1";
+$qSelect = "SELECT total_belanja, uang_muka, status_pesanan, metode_pembayaran FROM transaksi WHERE id_transaksi = '$id_transaksi' LIMIT 1";
 $resSelect = mysqli_query($conn, $qSelect);
 
 if ($resSelect && mysqli_num_rows($resSelect) > 0) {
