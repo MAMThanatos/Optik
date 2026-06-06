@@ -2,12 +2,22 @@
    Kasir Page Styles
    ============================================ */
 
+@media (min-width: 1025px) {
+  /* Batasi tinggi area konten utama kasir agar pas di layar penuh desktop */
+  .main-content {
+    height: 100vh;
+    max-height: 100vh;
+    overflow: hidden;
+  }
+}
+
 /* POS Layout - Split View */
 .pos-layout {
   display: flex;
   gap: 20px;
   padding: 20px 24px;
-  height: calc(100vh - 65px);
+  flex: 1;
+  min-height: 0;
   overflow: hidden;
 }
 
@@ -233,6 +243,7 @@
 /* Scrollable Cart Body */
 .pos-cart-body {
   flex: 1;
+  min-height: 0; /* Menjamin flex item dapat menyusut di bawah tinggi konten minimumnya */
   overflow-y: auto;
   display: flex;
   flex-direction: column;
