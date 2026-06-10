@@ -19,6 +19,17 @@ function initInputKacamataPage() {
     return;
   }
 
+  if (session.role !== "manager") {
+    window.location.href = "dashboard-kasir.html";
+    return;
+  }
+
+  // Tampilkan kontainer utama jika user terverifikasi manager
+  const wrapper = document.querySelector(".dashboard-wrapper");
+  if (wrapper) {
+    wrapper.style.display = "flex";
+  }
+
   setupSidebarForInput(session);
   populateUserInfo(session);
   setupLogout();
