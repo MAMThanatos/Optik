@@ -66,6 +66,9 @@ if($resTx) {
                 $d['qty'] = (int)$d['qty'];
                 $d['harga'] = (float)$d['harga'];
                 $d['harga_beli'] = isset($d['harga_beli']) ? (float)$d['harga_beli'] : ($d['harga'] * 0.6);
+                if ($_SESSION['role'] !== 'manager') {
+                    unset($d['harga_beli']);
+                }
                 $items[] = $d;
             }
         }

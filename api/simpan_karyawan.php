@@ -1,8 +1,9 @@
 <?php
 session_start();
-if (!isset($_SESSION['user_id'])) {
+if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'manager') {
     header("Content-Type: application/json; charset=UTF-8");
-    echo json_encode(["status" => "error", "message" => "Unauthorized access."]);
+    http_response_code(403);
+    echo json_encode(["status" => "error", "message" => "Unauthorized access. Manager only."]);
     exit;
 }
 header("Content-Type: application/json; charset=UTF-8");
