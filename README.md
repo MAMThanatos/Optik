@@ -34,6 +34,12 @@ Sistem Informasi Manajemen Inventory dan Kasir (Point of Sale) berbasis Web yang
   * Menghitung **Pendapatan**, **Harga Pokok Penjualan (HPP)** berdasarkan harga beli asli dari database, **Laba Kotor (Gross Profit)**, **Beban Operasional**, hingga **Laba Bersih (Net Profit)** secara matematis akurat.
 * 📈 **Dashboard Statistik:** Ringkasan pendapatan, transaksi hari ini, total stok barang, jumlah karyawan aktif, dan peringatan dini stok menipis (dibawah 5 unit).
 
+### 6. Proteksi Akses Halaman & Pencegahan Glitch Visual (FOUC)
+Untuk menjamin keamanan hak akses antar-role dan memberikan pengalaman pengguna yang mulus tanpa kebocoran data sensitif sebelum autentikasi selesai:
+* **Default-Hidden Sidebar & Menus:** Elemen navigasi khusus manajer (`.js-manager-only` dan `.js-manager-menus`) disembunyikan secara bawaan di CSS (`display: none`). Menu hanya akan ditampilkan via JavaScript setelah peran pengguna tervalidasi sebagai `manager`.
+* **Proteksi Halaman Utama Manajer:** Halaman sensitif seperti `input-kacamata.html` diatur dengan `display: none` pada kontainer utama `.dashboard-wrapper`. Halaman hanya akan dirender jika peran pengguna telah terverifikasi oleh server.
+* **Redirection Instan Tingkat Klien:** Skrip halaman khusus manajer secara instan memblokir pemanggilan API dan mengalihkan pengguna non-manajer (kasir) ke `dashboard-kasir.html` sebelum data sempat dimuat.
+
 ---
 
 ## 🛠️ Arsitektur & Teknologi
